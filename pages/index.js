@@ -5,8 +5,11 @@ import List from '../components/list/List';
 function Home() {
 	return (
 		<>
-			<Wrap />
-			<List />
+			<Wrap>
+				<div>
+					<List />
+				</div>
+			</Wrap>
 		</>
 	)
 };

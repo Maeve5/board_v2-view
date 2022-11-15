@@ -1,9 +1,9 @@
 import React from 'react';
 import { router } from 'next/router';
 import { Layout, Menu, Button, Modal } from 'antd';
-const { Header } = Layout;
+const { Header, Content } = Layout;
 
-function Wrap({ }) {
+function Wrap({ children }) {
 
 	// const [selectedKey, setSelectedKey] = useState(false);
 
@@ -29,7 +29,7 @@ function Wrap({ }) {
 					<div className="logo">
 						<p>BOARD</p>
 					</div>
-					
+
 					<Menu
 						style={{ flex: 1 }}
 						theme="light"
@@ -57,10 +57,10 @@ function Wrap({ }) {
 							<div className='name'>{user ? user.name : ''} 님</div>
 							<Button onClick={() => setIsModalOpen(true)}>로그아웃</Button>
 						</>
-						: <>
+						: <> */}
 							<Button style={{ marginRight: '5px' }} onClick={() => router.push('/auth/login')}>로그인</Button>
 							<Button onClick={() => router.push('/auth/join')}>회원가입</Button>
-						</>
+						{/* </>
 					} */}
 
 					{/* 로그아웃 확인 모달 */}
@@ -70,10 +70,18 @@ function Wrap({ }) {
 				</div>
 			</Header>
 
+			<Content style={{ background: 'white' }}>
+				<div className='content-container'>
+					{children}
+				</div>
+			</Content>
+
 			<style jsx>{`
 			.header-container { width: 1024px; display: flex; align-items: center; }
-			.logo {margin-right: 40px;}
-            .logo p {margin: 0; font-size: 16px;}
+			.logo { margin-right: 40px; }
+            .logo p { margin: 0; font-size: 16px; }
+
+			.content-container { width: 1024px; margin: 64px auto 0; }
 			`}</style>
 		</Layout>
 	);

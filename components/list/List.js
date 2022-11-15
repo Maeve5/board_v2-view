@@ -8,7 +8,7 @@ function List() {
 			</div>
 
 			<style jsx>{`
-			.list-container { margin: 100px auto; width: 100%; min-width: 600px; }
+			.list-container { margin: 0 auto; width: 100%; min-width: 600px; text-align: center; }
 			`}</style>
 		</>
 	);

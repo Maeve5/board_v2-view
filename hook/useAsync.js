@@ -25,7 +25,7 @@ const reducer = (state, action) => {
 	}
 };
 
-function useAsync(initialForm) {
+export default function useAsync(initialForm) {
 
 	const [state, dispatch] = useReducer(reducer, initialForm);
 
@@ -44,5 +44,3 @@ function useAsync(initialForm) {
 
 	return [state, fetchData];
 };
-
-export default useAsync;
