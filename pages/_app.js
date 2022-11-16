@@ -1,5 +1,6 @@
 import { RecoilRoot } from "recoil";
-import Head from "next/head"
+import Spinner from '../components/global/Spinner';
+import Head from "next/head";
 import { ConfigProvider } from 'antd';
 import koKR from 'antd/lib/locale/ko_KR';
 import 'antd/dist/antd.css';
@@ -19,6 +20,7 @@ function MyApp({ Component, pageProps }) {
 
 			<RecoilRoot>
 				<ConfigProvider locale={koKR}>
+					<Spinner />
 					<Component {...pageProps} />
 				</ConfigProvider>
 			</RecoilRoot>

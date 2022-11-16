@@ -1,9 +1,20 @@
-import React from 'react';
-import { router } from 'next/router';
+import React, { useState, useCallback, useEffect } from 'react';
+import router from 'next/router';
 import { Layout, Menu, Button, Modal } from 'antd';
 const { Header, Content } = Layout;
 
-function Wrap({ children }) {
+function Wrap({ children, init }) {
+
+	// 로그인 여부
+	const [login, setLogin] = useState(false);
+
+	useEffect(() => {
+		if (init) {
+			setLogin(true);
+		}
+	}, []);
+
+
 
 	// const [selectedKey, setSelectedKey] = useState(false);
 
@@ -13,12 +24,11 @@ function Wrap({ children }) {
 	// }, []);
 
 	return (
-		<Layout style={{ position: 'sticky', zIndex: 98 }}>
+		<Layout>
 			<Header
 				style={{
 					background: 'white',
-					position: 'fixed',
-					zIndex: 99,
+					zIndex: 500,
 					width: '100%',
 					minWidth: 600,
 					display: 'flex',
@@ -43,25 +53,25 @@ function Wrap({ children }) {
 								label: '게시판'
 							},
 							// 로그인 했을 때만
-							// login ?
-							// 	{
-							// 		key: 'mypage',
-							// 		label: '마이페이지'
-							// 	} : null,
+							login ?
+								{
+									key: 'mypage',
+									label: '마이페이지'
+								} : null,
 						]}
 					/>
 
 					{/* 로그인 여부에 따라*/}
-					{/* {login ?
+					{login ?
 						<>
-							<div className='name'>{user ? user.name : ''} 님</div>
+							<div className='name'>{init.userKey ? init.userKey : ''} 님</div>
 							<Button onClick={() => setIsModalOpen(true)}>로그아웃</Button>
 						</>
-						: <> */}
+						: <>
 							<Button style={{ marginRight: '5px' }} onClick={() => router.push('/auth/login')}>로그인</Button>
 							<Button onClick={() => router.push('/auth/join')}>회원가입</Button>
-						{/* </>
-					} */}
+						</>
+					}
 
 					{/* 로그아웃 확인 모달 */}
 					{/* <Modal title='알림' open={isModalOpen} onOk={onLogout} onCancel={() => setIsModalOpen(false)}>
@@ -80,6 +90,7 @@ function Wrap({ children }) {
 			.header-container { width: 1024px; display: flex; align-items: center; }
 			.logo { margin-right: 40px; }
             .logo p { margin: 0; font-size: 16px; }
+			.name { margin-right: 10px; }
 
 			.content-container { width: 1024px; margin: 64px auto 0; }
 			`}</style>

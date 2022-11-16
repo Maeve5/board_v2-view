@@ -1,4 +1,5 @@
 import React, { useState, useCallback } from 'react';
+import router from 'next/router';
 import API from '../../modules/api';
 import { Input, Button, Modal } from 'antd';
 import { EyeTwoTone, EyeInvisibleOutlined } from '@ant-design/icons';
@@ -18,9 +19,13 @@ function Login() {
 				password: password
 			}).then((response) => {
 				console.log('response', response);
-				alert('ok');
+				Modal.info({
+					title: '로그인',
+					content: '환영합니다.',
+				});
+				router.push('/');
 			}).catch((error) => {
-				console.log('1', error);
+				// console.log('1', error);
 				Modal.warning({
 					title: '로그인 오류',
 					content: error.response.data.message,

@@ -1,10 +1,11 @@
 import React from 'react';
+import Wrap from '../../components/global/Wrap';
 
 function Mypage() {
 	return (
-		<div>
-			
-		</div>
+		<Wrap>
+			mypage
+		</Wrap>
 	);
 };
 

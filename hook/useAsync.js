@@ -25,7 +25,7 @@ const reducer = (state, action) => {
 	}
 };
 
-export default function useAsync(initialForm) {
+export default function useAsync(url, method, token, body) {
 
 	const [state, dispatch] = useReducer(reducer, initialForm);
 

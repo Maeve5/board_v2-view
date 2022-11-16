@@ -1,11 +1,23 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import Wrap from '../components/global/Wrap';
 import List from '../components/list/List';
+import { server } from '../modules/server';
+import { Modal } from 'antd';
 
-function Home() {
+function Home({ init, errorMessage }) {
+
+	useEffect(() => {
+		if (errorMessage) {
+			Modal.warning({
+				title: '경고',
+				content: errorMessage
+			});
+		}
+	}, []);
+
 	return (
 		<>
-			<Wrap>
+			<Wrap init={init}>
 				<div>
 					<List />
 				</div>
@@ -17,10 +29,19 @@ function Home() {
 export default React.memo(Home);
 
 export const getServerSideProps = async ({ req }) => {
-	try {
-		
+	// console.log(req.cookies);
+	let init = await server(req);
+	// console.log('init', init);
+	// init = { result, token, userKey }
+
+	if (init.result) {
+		return { props: { init }}
 	}
-	catch (err) {
-		
+	else {
+		return {
+			props: {
+				errorMessage: init.errorMessage
+			}
+		}
 	}
 };
