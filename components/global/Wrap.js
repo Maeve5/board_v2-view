@@ -1,27 +1,39 @@
 import React, { useState, useCallback, useEffect } from 'react';
 import router from 'next/router';
+import { useRecoilValue } from 'recoil';
+import userNameState from '../../atom/userName';
 import { Layout, Menu, Button, Modal } from 'antd';
+import useAsync from '../../hook/useAsync';
 const { Header, Content } = Layout;
 
-function Wrap({ children, init }) {
-
+function Wrap({ children, isLogin, userKey }) {
+	
+	// 사용자 이름
+	const userName = useRecoilValue(userNameState);
 	// 로그인 여부
 	const [login, setLogin] = useState(false);
-
+	// 메뉴 활성화
+	const [selectedKeys, setSelectedKeys] = useState('');
+	// 로그인 여부, 메뉴 활성화
 	useEffect(() => {
-		if (init) {
+		let path = router.pathname.slice(1);
+		if (isLogin) {
 			setLogin(true);
+			setSelectedKeys(path);
 		}
 	}, []);
 
+	// 로그아웃
+	const [isModalOpen, setIsModalOpen] = useState(false);
+	const [logoutState, , logout] = useAsync('/v2/auth/logout', 'post');
 
-
-	// const [selectedKey, setSelectedKey] = useState(false);
-
-	// useEffect(() => {
-	// 	let path = router.pathname.slice(1);
-
-	// }, []);
+	useEffect(() => {
+		if (logoutState === 'success') {
+			setIsModalOpen(false);
+			setLogin(false);
+			router.push('/');
+		}
+	}, [logoutState]);
 
 	return (
 		<Layout>
@@ -45,7 +57,7 @@ function Wrap({ children, init }) {
 						theme="light"
 						mode="horizontal"
 						defaultSelectedKeys={['']}
-						// selectedKeys={selectedKeys}
+						selectedKeys={selectedKeys}
 						onClick={(e) => router.push(`/${e.key}`)}
 						items={[
 							{
@@ -64,7 +76,7 @@ function Wrap({ children, init }) {
 					{/* 로그인 여부에 따라*/}
 					{login ?
 						<>
-							<div className='name'>{init.userKey ? init.userKey : ''} 님</div>
+							<div className='name'>{userName} 님</div>
 							<Button onClick={() => setIsModalOpen(true)}>로그아웃</Button>
 						</>
 						: <>
@@ -74,9 +86,9 @@ function Wrap({ children, init }) {
 					}
 
 					{/* 로그아웃 확인 모달 */}
-					{/* <Modal title='알림' open={isModalOpen} onOk={onLogout} onCancel={() => setIsModalOpen(false)}>
+					<Modal title='알림' open={isModalOpen} onOk={() => logout({ userKey })} onCancel={() => setIsModalOpen(false)}>
 						<p>로그아웃하시겠습니까?</p>
-					</Modal> */}
+					</Modal>
 				</div>
 			</Header>
 
@@ -98,4 +110,4 @@ function Wrap({ children, init }) {
 	);
 };
 
-export default Wrap;
+export default React.memo(Wrap);

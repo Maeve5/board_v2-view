@@ -22,7 +22,7 @@ function Spinner() {
 				<div
 				className='spinner'
 				style={{
-					position: 'sticky',
+					position: 'fixed',
 					width: '100%',
 					height: '100vh',
 					textAlign: 'center',

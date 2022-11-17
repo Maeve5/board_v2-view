@@ -1,41 +1,44 @@
-import React, { useState, useCallback } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import router from 'next/router';
-import API from '../../modules/api';
+import useAsync from '../../hook/useAsync';
 import { Input, Button, Modal } from 'antd';
 import { EyeTwoTone, EyeInvisibleOutlined } from '@ant-design/icons';
+import { useSetRecoilState } from 'recoil';
+import spinnerState from '../../atom/spinner';
 const { Password } = Input;
 
 function Login() {
 
-	// id, password state
+	// id, password
 	const [id, setId] = useState('');
 	const [password, setPassword] = useState('');
-
+	// spinner
+	const setLoading = useSetRecoilState(spinnerState);
 	// 로그인
-	const onLogin = useCallback(async () => {
-		try {
-			await API.post(`/v2/auth/login`, {
-				id: id,
-				password: password
-			}).then((response) => {
-				console.log('response', response);
-				Modal.info({
-					title: '로그인',
-					content: '환영합니다.',
-				});
-				router.push('/');
-			}).catch((error) => {
-				// console.log('1', error);
-				Modal.warning({
-					title: '로그인 오류',
-					content: error.response.data.message,
-				});
-			})
+	const [loginState, , login] = useAsync('/v2/auth/login', 'post');
+
+	useEffect(() => {
+		setLoading(true);
+		if (loginState === 'success') {
+			Modal.info({
+				title: '로그인',
+				content: '환영합니다.',
+			});
+			router.push('/');
+		}		
+		if (loginState === 'loading') {
+			setLoading(true);
 		}
-		catch (error) {
-			console.log('2', error);
+		else {
+			setLoading(false);
 		}
-	}, [id, password]);
+	}, [loginState, setLoading]);
+
+	// auto focus
+	const idInput = useRef();
+	useEffect(() => {
+		idInput.current.focus();
+	}, []);
 	
 	return (
 		<>
@@ -47,6 +50,7 @@ function Login() {
 						type='text'
 						placeholder=''
 						style={{ width: 196 }}
+						ref={idInput}
 						value={id}
 						onChange={(e) => setId(e.target.value)}
 					/>
@@ -64,7 +68,7 @@ function Login() {
 				</div>
 			</div>
 			<div className='button'>
-				<Button onClick={onLogin}>로그인</Button>
+				<Button onClick={() => login({ id, password })}>로그인</Button>
 			</div>
 			
 			<style jsx>{`

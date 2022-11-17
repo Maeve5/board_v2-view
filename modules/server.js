@@ -1,4 +1,4 @@
-import axios from 'axios';
+import API from './api';
 
 export const server = async (req) => {
 	let data = { result: false };
@@ -6,19 +6,10 @@ export const server = async (req) => {
 	const token = req.cookies.board_cookie ? req.cookies.board_cookie : null;
 
 	try {
-		await axios.post(
-			`/v2/auth/token`,
-			null,
-			{
-			baseURL: 'http://localhost:8083',
-			headers: {
-				'Authorization': token ? token : '',
-				'Accept': 'Application/json',
-				'Content-Type': 'Application/json',
-			},
-			withCredentials: true,
-		}).then((response) => {
-			// console.log(response.data);
+		// header에 token 추가
+		API.defaults.headers.common['Authorization'] = token;
+		await API.post(`/v2/auth/token`)
+		.then((response) => {
 			data = { result: true, ...response.data };
 		}).catch((error) => {
 			console.log('11', error);
@@ -37,4 +28,4 @@ export const server = async (req) => {
 		// return data = { result: false, errorMessage: error.response.data?.message }
 		return data;
 	}
-}
+};
