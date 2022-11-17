@@ -24,7 +24,7 @@ export const getServerSideProps = async ({ req }) => {
 			redirect: {
 				permanent: false,
 				destination: '/auth/login',
-				errorMessage: init.errorMessage ? init.errorMessage : ''
+				errorMessage: init.errorMessage ? init.errorMessage : null
 			}
 		}
 	}

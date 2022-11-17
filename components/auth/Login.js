@@ -3,9 +3,9 @@ import router from 'next/router';
 import { useSetRecoilState } from 'recoil';
 import spinnerState from '../../atom/spinner';
 import useAsync from '../../hook/useAsync';
-import { Input, Button, Modal } from 'antd';
-import { EyeTwoTone, EyeInvisibleOutlined } from '@ant-design/icons';
-const { Password } = Input;
+import Input from '../global/InputText';
+import Button from '../global/Btn';
+import { Modal } from 'antd';
 
 function Login() {
 	// spinner
@@ -34,45 +34,40 @@ function Login() {
 	}, [loginState, setLoading]);
 
 	// auto focus
-	const idInput = useRef();
+	const inputRef = useRef();
 	useEffect(() => {
-		idInput.current.focus();
+		inputRef.current.focus();
 	}, []);
 	
 	return (
 		<>
 			<div className='login'>
-				<div className='container'>
-					<div className='title'>ID</div>
-					<Input
-						type='text'
-						placeholder=''
-						style={{ width: 196 }}
-						ref={idInput}
-						value={id}
-						onChange={(e) => setId(e.target.value)}
-					/>
-				</div>
-				<div className='container'>
-					<div className='title'>Password</div>
-					<Password
-						placeholder=''
-						iconRender={(visible) => (visible ? <EyeTwoTone /> : <EyeInvisibleOutlined />)}
-						style={{ width: 196 }}
-						value={password}
-						onChange={(e) => setPassword(e.target.value)}
-					/>
-				</div>
+				<Input
+					title='ID'
+					type='text'
+					placeholder='아이디를 입력해 주세요.'
+					titleStyle={{ display: 'inline-block', width: '80px', textAlign: 'left' }}
+					style={{ width: 196 }}
+					inputRef={inputRef}
+					value={id}
+					onChange={(e) => setId(e.target.value)}
+				/>
+				<Input
+					title='Password'
+					type='password'
+					placeholder='비밀번호를 입력해 주세요.'
+					titleStyle={{ display: 'inline-block', width: '80px', textAlign: 'left' }}
+					style={{ width: 196 }}
+					value={password}
+					onChange={(e) => setPassword(e.target.value)}
+				/>
 			</div>
 			<div className='button'>
-				<Button onClick={() => login({ id, password })}>로그인</Button>
+				<Button onClick={() => login({ id, password })} value='로그인' />
 			</div>
 			
 			<style jsx>{`
 			.login { margin: 0 auto; width: 100%; min-width: 600px; text-align: center; padding-top: 60px; }
-			.container { margin: 10px 0; }
-			.title { display: inline-block; width: 80px; text-align: left; }
-
 			.button { margin-top: 30px; text-align: center; }
 			`}</style>
 		</>

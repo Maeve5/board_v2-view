@@ -22,7 +22,7 @@ export const getServerSideProps = async ({ req }) => {
 	else {
 		return {
 			props: {
-				errorMessage: init.errorMessage
+				errorMessage: init.errorMessage ? init.errorMessage : null
 			}
 		}
 	}
