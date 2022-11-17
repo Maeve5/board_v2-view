@@ -1,27 +1,36 @@
 import React, { useState, useCallback, useEffect } from 'react';
 import router from 'next/router';
-import { useRecoilValue } from 'recoil';
+import { useRecoilState } from 'recoil';
 import userNameState from '../../atom/userName';
 import { Layout, Menu, Button, Modal } from 'antd';
 import useAsync from '../../hook/useAsync';
 const { Header, Content } = Layout;
 
 function Wrap({ children, isLogin, userKey }) {
-	
-	// 사용자 이름
-	const userName = useRecoilValue(userNameState);
 	// 로그인 여부
 	const [login, setLogin] = useState(false);
 	// 메뉴 활성화
 	const [selectedKeys, setSelectedKeys] = useState('');
-	// 로그인 여부, 메뉴 활성화
+	// 사용자 이름
+	const [nameState, nameRes, name] = useAsync(`/v2/user/${userKey}`, 'get');
+	// 사용자 이름 atom 저장
+	const [userName, setUserName] = useRecoilState(userNameState);
+
+	// 로그인 여부, 메뉴 활성화, 사용자 이름 조회
 	useEffect(() => {
 		let path = router.pathname.slice(1);
 		if (isLogin) {
 			setLogin(true);
 			setSelectedKeys(path);
 		}
+		name({ userKey });
 	}, []);
+
+	useEffect(() => {
+		if (nameState === 'success') {
+			setUserName(() => nameRes.name);
+		}
+	}, [nameState]);
 
 	// 로그아웃
 	const [isModalOpen, setIsModalOpen] = useState(false);

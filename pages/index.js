@@ -1,23 +1,14 @@
-import React, { useState, useEffect } from 'react';
-import { useSetRecoilState } from 'recoil';
+import React, { useEffect } from 'react';
 import router from 'next/router';
 import Wrap from '../components/global/Wrap';
+import Button from '../components/global/Btn';
 import List from '../components/list/List';
-import userNameState from '../atom/userName';
 import useAsync from '../hook/useAsync';
 import { server } from '../modules/server';
-import { Modal, Button, Pagination } from 'antd';
+import { Modal } from 'antd';
 
 function Home({ init, errorMessage }) {
-
-	// 사용자 이름 조회
-	const [nameState, nameRes, name] = useAsync(`/v2/user/${init.userKey}`, 'get');
-	// 사용자 이름 atom
-	const setUserName = useSetRecoilState(userNameState);
-
 	useEffect(() => {
-		name({ userName: init.userKey });
-
 		if (errorMessage) {
 			Modal.warning({
 				title: '경고',
@@ -26,47 +17,21 @@ function Home({ init, errorMessage }) {
 		}
 	}, []);
 
-	useEffect(() => {
-		if (nameState === 'success') {
-			setUserName(() => nameRes.name);
-		}
-	}, [nameState]);
-
-	// 페이지네이션
-	const [postArr, setPostArr] = useState([]);
-	const [pageSize] = useState(10);
-	const [currentPage, setCurrentPage] = useState(1);
+	// 게시글 목록 조회
 	const [postState, postRes, fetchData] = useAsync('/v2/list', 'get');
-
-	useEffect(() => {
-		fetchData({	pageSize, currentPage });
-	}, [currentPage]);
-
-	useEffect(() => {
-		if (postState === 'success') {
-			setPostArr(() => postRes.list);
-		}
-	}, [postState]);
 
 	return (
 		<Wrap isLogin={init.isLogin} userKey={init.userKey}>
 			<div className='list-container'>
 				<div className='button'>
-					<Button onClick={() => router.push('/list/insert')}>글쓰기</Button>
+					<Button value='글쓰기' onClick={() => router.push('/list/insert')} />
 				</div>
-				<div className='list'>
-					<List postArr={postArr} />
-				</div>
-				<div className='pagination'>
-					<Pagination onChange={(e) => setCurrentPage(e)} defaultCurrent={currentPage} current={currentPage} pageSize={pageSize} total={postRes ? postRes.length : 0} />
-				</div>
+				<List state={postState} res={postRes} fetchData={fetchData} pageSize={10} />
 			</div>
 
 			<style jsx>{`
 			.list-container { margin: 0 auto; max-width: 800px; min-width: 600px; width: 80%; }
 			.button { float: right; margin: 0 20px 10px 0; }
-			.list { display: block; margin: 0 auto; width: 100%; min-width: 600px; text-align: center; }
-			.pagination { display: flex; align-items: center; justify-content: center; }
 			`}</style>
 		</Wrap>
 	)

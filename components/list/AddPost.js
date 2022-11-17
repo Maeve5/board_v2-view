@@ -1,19 +1,22 @@
 import React, { useState, useRef, useEffect } from 'react';
 import router from 'next/router';
+import { useSetRecoilState } from 'recoil';
+import spinnerState from '../../atom/spinner';
 import useAsync from '../../hook/useAsync';
 import { Input, Button } from 'antd';
 const { TextArea } = Input;
 
 function AddPost() {
-
+	// spinner
+	const setLoading = useSetRecoilState(spinnerState);
 	// 제목, 내용
 	const [title, setTitle] = useState('');
 	const [description, setDescription] = useState('');
-
 	// 게시글 등록
 	const [insertState, , insert] = useAsync('/v2/list', 'post');
 
 	useEffect(() => {
+		setLoading(true);
 		if (insertState === 'success') {
 			router.push('/');
 		}

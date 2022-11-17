@@ -4,7 +4,6 @@ import Wrap from '../../components/global/Wrap';
 import Join from '../../components/auth/Join';
 
 function JoinPage({ errorMessage }) {
-
 	return (
 		<Wrap>
 			<Join />

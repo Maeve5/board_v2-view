@@ -1,11 +1,11 @@
 import React from "react";
 
-function Custom500() {
+function Custom404() {
 	return (
 		<div style={{ display: 'block', margin: '300px', textAlign: 'center' }}>
-			[500] 관리자에게 문의하세요.
+			[404] 존재하지 않는 페이지입니다.
 		</div>
 	)
 };
 
-export default React.memo(Custom500);
+export default React.memo(Custom404);

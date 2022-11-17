@@ -4,7 +4,6 @@ import AddPost from '../../components/list/AddPost';
 import { server } from '../../modules/server';
 
 function InsertPage({ init }) {
-
 	return (
 		<Wrap isLogin={init.isLogin} userKey={init.userKey}>
 			<AddPost />

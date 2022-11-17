@@ -1,5 +1,4 @@
 import React, { useState, useReducer, useCallback } from 'react';
-import axios from 'axios';
 import API from '../modules/api';
 import { Modal } from 'antd';
 

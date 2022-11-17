@@ -1,19 +1,18 @@
 import React, { useState, useEffect, useRef } from 'react';
 import router from 'next/router';
+import { useSetRecoilState } from 'recoil';
+import spinnerState from '../../atom/spinner';
 import useAsync from '../../hook/useAsync';
 import { Input, Button, Modal } from 'antd';
 import { EyeTwoTone, EyeInvisibleOutlined } from '@ant-design/icons';
-import { useSetRecoilState } from 'recoil';
-import spinnerState from '../../atom/spinner';
 const { Password } = Input;
 
 function Login() {
-
+	// spinner
+	const setLoading = useSetRecoilState(spinnerState);
 	// id, password
 	const [id, setId] = useState('');
 	const [password, setPassword] = useState('');
-	// spinner
-	const setLoading = useSetRecoilState(spinnerState);
 	// 로그인
 	const [loginState, , login] = useAsync('/v2/auth/login', 'post');
 
@@ -46,7 +45,6 @@ function Login() {
 				<div className='container'>
 					<div className='title'>ID</div>
 					<Input
-						name='id'
 						type='text'
 						placeholder=''
 						style={{ width: 196 }}
@@ -58,7 +56,6 @@ function Login() {
 				<div className='container'>
 					<div className='title'>Password</div>
 					<Password
-						name='password'
 						placeholder=''
 						iconRender={(visible) => (visible ? <EyeTwoTone /> : <EyeInvisibleOutlined />)}
 						style={{ width: 196 }}
