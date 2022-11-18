@@ -4,6 +4,7 @@ import { server } from '../../modules/server';
 import useAsync from '../../hook/useAsync';
 import Wrap from '../../components/global/Wrap';
 import Input from '../../components/global/InputText';
+import TextArea from '../../components/global/InputTextArea';
 import Button from '../../components/global/Btn';
 import { Modal } from 'antd';
 
@@ -98,9 +99,8 @@ function PostPage({ init, listKey }) {
 						bordered={false}
 					/>
 				}
-				<Input
+				<TextArea
 					title='내용'
-					type='textarea'
 					placeholder='내용을 입력해 주세요.'
 					containerStyle={edit ? {} : { borderTop: '1px solid #aaa', borderBottom: '1px solid #aaa'}}
 					titleStyle={{ flex: 1, textAlign: 'center' }}

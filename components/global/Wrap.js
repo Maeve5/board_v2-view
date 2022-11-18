@@ -2,13 +2,13 @@ import React, { useState, useEffect } from 'react';
 import { router } from 'next/router';
 import { useRecoilState } from 'recoil';
 import userNameState from '../../atom/userName';
-import { Layout, Menu, Button, Modal } from 'antd';
 import useAsync from '../../hook/useAsync';
+import Button from './Btn';
+import { Layout, Menu, Modal } from 'antd';
 const { Header, Content } = Layout;
 
 function Wrap({ children, url, isLogin, userKey }) {
-	// 로그인 여부
-	const [login, setLogin] = useState(false);
+
 	// 메뉴 활성화
 	const path = url?.slice(1);
 	// 사용자 이름
@@ -17,7 +17,6 @@ function Wrap({ children, url, isLogin, userKey }) {
 	// 로그인 여부
 	useEffect(() => {
 		if (isLogin) {
-			setLogin(true);
 			setUserName(JSON.parse(localStorage.getItem('data')).name);
 		}
 	}, []);
@@ -30,7 +29,6 @@ function Wrap({ children, url, isLogin, userKey }) {
 		if (logoutState === 'success') {
 			localStorage.removeItem('data');
 			setIsModalOpen(false);
-			setLogin(false);
 			router.push('/');
 		}
 	}, [logoutState]);
@@ -64,7 +62,7 @@ function Wrap({ children, url, isLogin, userKey }) {
 								label: '게시판'
 							},
 							// 로그인 했을 때만
-							login ?
+							isLogin ?
 								{
 									key: 'mypage',
 									label: '마이페이지'
@@ -73,14 +71,14 @@ function Wrap({ children, url, isLogin, userKey }) {
 					/>
 
 					{/* 로그인 여부에 따라*/}
-					{login ?
+					{isLogin ?
 						<>
 							<div className='name'>{userName} 님</div>
-							<Button onClick={() => setIsModalOpen(true)}>로그아웃</Button>
+							<Button onClick={() => setIsModalOpen(true)} value='로그아웃' />
 						</>
 						: <>
-							<Button style={{ marginRight: '5px' }} onClick={() => router.push('/auth/login')}>로그인</Button>
-							<Button onClick={() => router.push('/auth/join')}>회원가입</Button>
+							<Button style={{ marginRight: '5px' }} onClick={() => router.push('/auth/login')} value='로그인' />
+							<Button onClick={() => router.push('/auth/join')} value='회원가입' />
 						</>
 					}
 
@@ -103,7 +101,7 @@ function Wrap({ children, url, isLogin, userKey }) {
 			.logo p { margin: 0; font-size: 16px; }
 			.name { margin-right: 10px; }
 
-			.content-container { width: 1024px; margin: 64px auto 0; }
+			.content-container { width: 1024px; margin: 30px auto 0; }
 			`}</style>
 		</Layout>
 	);

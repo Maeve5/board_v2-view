@@ -9,6 +9,9 @@ import { Modal } from 'antd';
 
 function Home({ init, resolvedUrl, errorMessage }) {
 	
+	// 게시글 목록 조회
+	const [postState, postRes, fetchData] = useAsync('/v2/list', 'get');
+
 	useEffect(() => {
 		if (errorMessage) {
 			Modal.warning({
@@ -17,9 +20,6 @@ function Home({ init, resolvedUrl, errorMessage }) {
 			});
 		}
 	}, []);
-
-	// 게시글 목록 조회
-	const [postState, postRes, fetchData] = useAsync('/v2/list', 'get');
 
 	return (
 		<Wrap path={resolvedUrl} isLogin={init.isLogin} userKey={init.userKey}>
