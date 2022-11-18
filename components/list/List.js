@@ -2,9 +2,10 @@ import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { Pagination } from 'antd';
 
-function List({ state, res, fetchData, pageSize }) {
+function List({ state, res, fetchData }) {
 	// 페이지네이션
 	const [postArr, setPostArr] = useState([]);
+	const [pageSize] = useState(10);
 	const [currentPage, setCurrentPage] = useState(1);
 
 	useEffect(() => {

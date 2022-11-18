@@ -1,10 +1,17 @@
 import React from "react";
+import router from 'next/router';
+import Button from "../components/global/Btn";
+import { Result } from 'antd';
 
 function Custom404() {
 	return (
-		<div style={{ display: 'block', margin: '300px', textAlign: 'center' }}>
-			[404] 존재하지 않는 페이지입니다.
-		</div>
+		<Result
+			status="404"
+			title="404"
+			subTitle="Sorry, the page you visited does not exist."
+			style={{ margin: '15vh auto'}}
+			extra={<Button onClick={() => router.push('/')} value='Back Home' />}
+		/>
 	)
 };
 

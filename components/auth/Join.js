@@ -1,9 +1,10 @@
 import React, { useState, useEffect, useRef } from 'react';
 import router from 'next/router';
 import useAsync from '../../hook/useAsync';
-import { Button, Input, Modal } from 'antd';
-import { EyeTwoTone, EyeInvisibleOutlined } from '@ant-design/icons';
-const { Password } = Input;
+import Input from '../global/InputText';
+import Password from '../global/InputPassword';
+import Button from '../global/Btn';
+import { Modal } from 'antd';
 
 function Join() {
 
@@ -25,54 +26,46 @@ function Join() {
 	}, [joinState]);
 
 	// auto focus
-	const nameInput = useRef();
+	const inputRef = useRef();
 	useEffect(() => {
-		nameInput.current.focus();
+		inputRef.current.focus();
 	}, []);
 
 	return (
 		<div className='join'>
-			<div className='container'>
-				<div className='title'>이름</div>
-				<Input
-					type='text'
-					placeholder="이름을 입력해 주세요."
-					style={{ width: 196 }}
-					ref={nameInput}
-					value={name}
-					onChange={(e) => setName(e.target.value)}
-				/>
-			</div>
-			<div className='container'>
-				<div className='title'>ID</div>
-				<Input
-					type='text'
-					placeholder="아이디를 입력해 주세요."
-					style={{ width: 196 }}
-					value={id}
-					onChange={(e) => setId(e.target.value)}
-				/>
-			</div>
-			<div className='container'>
-				<div className='title'>비밀번호</div>
-				<Password
-					placeholder="비밀번호를 입력해 주세요."
-					iconRender={(visible) => (visible ? <EyeTwoTone /> : <EyeInvisibleOutlined />)}
-					style={{ width: 196 }}
-					value={password}
-					onChange={(e) => setPassword(e.target.value)}
-				/>
-			</div>
-
+			<Input
+				title='이름'
+				type='text'
+				placeholder='이름을 입력해 주세요.'
+				titleStyle={{ display: 'inline-block', width: '80px', textAlign: 'left' }}
+				style={{ width: 196 }}
+				inputRef={inputRef}
+				value={id}
+				onChange={(e) => setId(e.target.value)}
+			/>
+			<Input
+				title='ID'
+				type='text'
+				placeholder='아이디를 입력해 주세요.'
+				titleStyle={{ display: 'inline-block', width: '80px', textAlign: 'left' }}
+				style={{ width: 196 }}
+				value={id}
+				onChange={(e) => setId(e.target.value)}
+			/>
+			<Password
+				title='Password'
+				placeholder='비밀번호를 입력해 주세요.'
+				titleStyle={{ display: 'inline-block', width: '80px', textAlign: 'left' }}
+				style={{ width: 196 }}
+				value={password}
+				onChange={(e) => setPassword(e.target.value)}
+			/>
 			<div className='button'>
-				<Button onClick={() => join({ name, id, password })}>가입하기</Button>
+				<Button onClick={() => join({ name, id, password })} value='가입하기' />
 			</div>
 
 			<style jsx>{`
 			.join { margin: 0 auto; width: 100%; min-width: 600px; text-align: center; padding-top: 60px; }
-			.container { margin: 10px 0; }
-			.title { display: inline-block; width: 80px; text-align: left; }
-
 			.button { margin-top: 30px; text-align: center; }
 			`}</style>
 		</div>

@@ -1,10 +1,17 @@
 import React from "react";
+import router from 'next/router';
+import Button from "../components/global/Btn";
+import { Result } from 'antd';
 
 function Custom500() {
 	return (
-		<div style={{ display: 'block', margin: '300px', textAlign: 'center' }}>
-			[500] 관리자에게 문의하세요.
-		</div>
+		<Result
+			status="500"
+			title="500"
+			subTitle="Sorry, something went wrong."
+			style={{ margin: '15vh auto'}}
+			extra={<Button onClick={() => router.push('/')} value='Back Home' />}
+		/>
 	)
 };
 

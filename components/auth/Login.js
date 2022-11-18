@@ -1,37 +1,29 @@
 import React, { useState, useEffect, useRef } from 'react';
 import router from 'next/router';
-import { useSetRecoilState } from 'recoil';
-import spinnerState from '../../atom/spinner';
 import useAsync from '../../hook/useAsync';
 import Input from '../global/InputText';
+import Password from '../global/InputPassword';
 import Button from '../global/Btn';
 import { Modal } from 'antd';
 
 function Login() {
-	// spinner
-	const setLoading = useSetRecoilState(spinnerState);
 	// id, password
 	const [id, setId] = useState('');
 	const [password, setPassword] = useState('');
 	// 로그인
-	const [loginState, , login] = useAsync('/v2/auth/login', 'post');
-
+	const [loginState, loginRes, login] = useAsync('/v2/auth/login', 'post');
+	
 	useEffect(() => {
-		setLoading(true);
 		if (loginState === 'success') {
+			// 사용자 이름 localStorage 저장
+			localStorage.setItem('data', JSON.stringify({name: `${loginRes.name}`}));
 			Modal.info({
 				title: '로그인',
 				content: '환영합니다.',
 			});
 			router.push('/');
-		}		
-		if (loginState === 'loading') {
-			setLoading(true);
 		}
-		else {
-			setLoading(false);
-		}
-	}, [loginState, setLoading]);
+	}, [loginState]);
 
 	// auto focus
 	const inputRef = useRef();
@@ -52,9 +44,8 @@ function Login() {
 					value={id}
 					onChange={(e) => setId(e.target.value)}
 				/>
-				<Input
+				<Password
 					title='Password'
-					type='password'
 					placeholder='비밀번호를 입력해 주세요.'
 					titleStyle={{ display: 'inline-block', width: '80px', textAlign: 'left' }}
 					style={{ width: 196 }}

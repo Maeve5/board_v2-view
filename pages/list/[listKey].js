@@ -1,47 +1,35 @@
 import React, { useEffect, useState, useCallback, useRef } from 'react';
 import router from 'next/router';
-import { useSetRecoilState } from 'recoil';
-import spinnerState from '../../atom/spinner';
+import { server } from '../../modules/server';
+import useAsync from '../../hook/useAsync';
 import Wrap from '../../components/global/Wrap';
 import Input from '../../components/global/InputText';
 import Button from '../../components/global/Btn';
-import { server } from '../../modules/server';
-import useAsync from '../../hook/useAsync';
 import { Modal } from 'antd';
 
 function PostPage({ init, listKey }) {
-	// spinner
-	const setLoading = useSetRecoilState(spinnerState);
-	// 게시글 조회
-	const [getPostState, getPostRes, getPost] = useAsync(`/v2/list/${listKey}`, 'get');
 	
+	// 게시글 조회
+	const [getPostState, getPostRes, getPost] = useAsync(`/v2/list/${listKey}`, 'get');	
 	useEffect(() => {
 		getPost();
 	}, []);
-	
+
 	// 제목, 작성자, 내용
 	const [title, setTitle] = useState('');
 	const [name, setName] = useState('');
 	const [description, setDescription] = useState('');
 	
 	useEffect(() => {
-		setLoading(true);
 		if (getPostState === 'success') {
 			setTitle(() => getPostRes.title);
 			setName(() => getPostRes.name);
 			setDescription(() => getPostRes.description);
-			setLoading(false);
-		}
-		if (getPostState === 'loading') {
-			setLoading(true);
 		}
 		if (getPostState === 'error') {
 			router.push('/404');
 		}
-		else {
-			setLoading(false);
-		}
-	}, [getPostState]);
+	}, [getPostState, getPostRes]);
 
 	// 수정 여부
 	const [edit, setEdit] = useState(false);
@@ -59,10 +47,8 @@ function PostPage({ init, listKey }) {
 	}, [title, description]);
 
 	useEffect(() => {
-		setLoading(true);
 		if (updateState === 'success') {
 			setEdit(false);
-			setLoading(false);
 		}
 	}, [updateState]);
 
@@ -76,7 +62,6 @@ function PostPage({ init, listKey }) {
 	}, []);
 
 	useEffect(() => {
-		setLoading(true);
 		if (removeState === 'success') {
 			Modal.info({ title: '삭제완료' });
 			router.push('/');
@@ -89,7 +74,7 @@ function PostPage({ init, listKey }) {
 				<Input
 					title='제목'
 					type='text'
-					placeholder='제목을 입력하세요.'
+					placeholder='제목을 입력해 주세요.'
 					containerStyle={edit ? {} : { borderTop: '1px solid #aaa', borderBottom: '1px solid #aaa'}}
 					titleStyle={{ flex: 1, textAlign: 'center' }}
 					inputStyle={{ flex: 8 }}
@@ -116,7 +101,7 @@ function PostPage({ init, listKey }) {
 				<Input
 					title='내용'
 					type='textarea'
-					placeholder='내용을 입력하세요.'
+					placeholder='내용을 입력해 주세요.'
 					containerStyle={edit ? {} : { borderTop: '1px solid #aaa', borderBottom: '1px solid #aaa'}}
 					titleStyle={{ flex: 1, textAlign: 'center' }}
 					inputStyle={{ flex: 8 }}

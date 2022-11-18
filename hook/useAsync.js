@@ -47,7 +47,6 @@ export default function useAsync(url, method, token) {
 					method: method,
 					params: params ? params : null
 				}).then((response) => {
-					console.log('params', response);
 					setData(() => response.data);
 					dispatch({ type: 'SUCCESS', data: response.data});
 				}).catch((error) => {
@@ -65,7 +64,6 @@ export default function useAsync(url, method, token) {
 					method: method,
 					data: params ? params : null
 				}).then((response) => {
-					console.log('body', response);
 					setData(() => response.data);
 					dispatch({ type: 'SUCCESS', data: response.data});
 				}).catch((error) => {

@@ -6,6 +6,8 @@ import { Modal } from 'antd';
 
 function LoginPage({ errorMessage }) {
 
+	console.log(errorMessage);
+
 	// useEffect(() => {
 	// 	if (errorMessage) {
 	// 		Modal.warning({

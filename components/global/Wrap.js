@@ -1,36 +1,26 @@
-import React, { useState, useCallback, useEffect } from 'react';
-import router from 'next/router';
+import React, { useState, useEffect } from 'react';
+import { router } from 'next/router';
 import { useRecoilState } from 'recoil';
 import userNameState from '../../atom/userName';
 import { Layout, Menu, Button, Modal } from 'antd';
 import useAsync from '../../hook/useAsync';
 const { Header, Content } = Layout;
 
-function Wrap({ children, isLogin, userKey }) {
+function Wrap({ children, url, isLogin, userKey }) {
 	// 로그인 여부
 	const [login, setLogin] = useState(false);
 	// 메뉴 활성화
-	const [selectedKeys, setSelectedKeys] = useState('');
+	const path = url?.slice(1);
 	// 사용자 이름
-	const [nameState, nameRes, name] = useAsync(`/v2/user/${userKey}`, 'get');
-	// 사용자 이름 atom 저장
 	const [userName, setUserName] = useRecoilState(userNameState);
-
-	// 로그인 여부, 메뉴 활성화, 사용자 이름 조회
+	
+	// 로그인 여부
 	useEffect(() => {
-		let path = router.pathname.slice(1);
 		if (isLogin) {
 			setLogin(true);
-			setSelectedKeys(path);
+			setUserName(JSON.parse(localStorage.getItem('data')).name);
 		}
-		name({ userKey });
 	}, []);
-
-	useEffect(() => {
-		if (nameState === 'success') {
-			setUserName(() => nameRes.name);
-		}
-	}, [nameState]);
 
 	// 로그아웃
 	const [isModalOpen, setIsModalOpen] = useState(false);
@@ -38,6 +28,7 @@ function Wrap({ children, isLogin, userKey }) {
 
 	useEffect(() => {
 		if (logoutState === 'success') {
+			localStorage.removeItem('data');
 			setIsModalOpen(false);
 			setLogin(false);
 			router.push('/');
@@ -65,8 +56,7 @@ function Wrap({ children, isLogin, userKey }) {
 						style={{ flex: 1 }}
 						theme="light"
 						mode="horizontal"
-						defaultSelectedKeys={['']}
-						selectedKeys={selectedKeys}
+						defaultSelectedKeys={[path ? path : '']}
 						onClick={(e) => router.push(`/${e.key}`)}
 						items={[
 							{
@@ -110,7 +100,7 @@ function Wrap({ children, isLogin, userKey }) {
 			<style jsx>{`
 			.header-container { width: 1024px; display: flex; align-items: center; }
 			.logo { margin-right: 40px; }
-            .logo p { margin: 0; font-size: 16px; }
+			.logo p { margin: 0; font-size: 16px; }
 			.name { margin-right: 10px; }
 
 			.content-container { width: 1024px; margin: 64px auto 0; }

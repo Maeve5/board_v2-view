@@ -1,14 +1,12 @@
 import React, { useState, useRef, useEffect } from 'react';
 import router from 'next/router';
-import { useSetRecoilState } from 'recoil';
-import spinnerState from '../../atom/spinner';
 import useAsync from '../../hook/useAsync';
-import { Input, Button } from 'antd';
-const { TextArea } = Input;
+import Input from '../global/InputText';
+import TextArea from '../global/InputTextArea';
+import Button from '../global/Btn';
 
 function AddPost() {
-	// spinner
-	const setLoading = useSetRecoilState(spinnerState);
+
 	// 제목, 내용
 	const [title, setTitle] = useState('');
 	const [description, setDescription] = useState('');
@@ -16,47 +14,41 @@ function AddPost() {
 	const [insertState, , insert] = useAsync('/v2/list', 'post');
 
 	useEffect(() => {
-		setLoading(true);
 		if (insertState === 'success') {
 			router.push('/');
 		}
 	}, [insertState]);
 
 	// auto focus
-	const nameInput = useRef();
+	const titleInput = useRef();
 	useEffect(() => {
-		nameInput.current.focus();
+		titleInput.current.focus();
 	}, []);
 
 	return (
 		<div className='insert-container'>
-			<div className='item'>
-					<div className='title'>제목</div>
-					<div className='input'>
-						<Input
-							type='text'
-							placeholder='제목을 입력해 주세요.'
-							style={{ display: 'block' }}
-							ref={nameInput}
-							value={title}
-							onChange={(e) => setTitle(e.target.value)}
-						/>
-					</div>
-				</div>
-				<div className='item'>
-					<div className='title'>내용</div>
-					<div className='input'>
-						<TextArea
-							rows={4}
-							placeholder='내용을 입력해 주세요.'
-							style={{ resize: 'none' }}
-							value={description}
-							onChange={(e) => setDescription(e.target.value)}
-						/>
-					</div>
-				</div>
+			<Input
+				title='제목'
+				type='text'
+				placeholder='제목을 입력해 주세요.'
+				titleStyle={{ flex: 1, textAlign: 'center' }}
+				inputStyle={{ flex: 8 }}
+				style={{ display: 'block' }}
+				inputRef={titleInput}
+				value={title}
+				onChange={(e) => setTitle(e.target.value)}
+			/>
+			<TextArea
+				title='내용'
+				placeholder='내용을 입력해 주세요.'
+				titleStyle={{ flex: 1, textAlign: 'center' }}
+				inputStyle={{ flex: 8 }}
+				style={{ minHeight: 285, resize: 'none' }}
+				value={description}
+				onChange={(e) => setDescription(e.target.value)}
+			/>
 			<div className='button'>
-				<Button onClick={() => insert({ title, description })}>게시하기</Button>
+				<Button value='게시하기' onClick={() => insert({ title, description })} />
 			</div>
 
 			<style jsx>{`
