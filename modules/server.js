@@ -9,10 +9,8 @@ export const server = async (req) => {
 		API.defaults.headers.common['Authorization'] = token;
 		await API.post(`/v2/auth/token`)
 		.then((response) => {
-			console.log('response', response);
 			data = { result: true, ...response.data };
 		}).catch((error) => {
-			console.log('error', error);
 			data = {
 				result: false,
 				errorMessage: error.response.data?.message
