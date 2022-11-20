@@ -11,19 +11,13 @@ export const server = async (req) => {
 		.then((response) => {
 			data = { result: true, ...response.data };
 		}).catch((error) => {
-			data = {
-				result: false,
-				errorMessage: error.response.data?.message
-			}
 			throw new Error(error.response.data?.message);
 		})
-
 		return data;
 	}
 	catch (error) {
 		console.log('12', error);
-		// error 11을 거쳐서 고대로 12로 에러메세지가 전달됨.
-		// return data = { result: false, errorMessage: error.response.data?.message }
+		data = { result: false, errorMessage: error.response.data?.message }
 		return data;
 	}
 };

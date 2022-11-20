@@ -1,73 +1,69 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect, useCallback, useRef, useMemo } from 'react';
+import { router } from 'next/router';
 import { useSetRecoilState } from 'recoil';
 import spinnerState from '../../atom/spinner';
 import Wrap from '../../components/global/Wrap';
+import Password from '../../components/global/InputPassword';
+import Button from '../../components/global/Btn';
 import MyInfo from '../../components/mypage/MyInfo';
 import MyPassword from '../../components/mypage/MyPassword';
 import MyHistory from '../../components/mypage/MyHistory';
 import DeleteUser from '../../components/mypage/DeleteUser';
+import useAsync from '../../hook/useAsync';
 import { server } from '../../modules/server';
-import { Tabs, Modal } from 'antd';
+import MyPageNav from '../../components/mypage/MyPageNav';
 
 function Mypage({ init, resolvedUrl, errorMessage }) {
 
-	// spinner
-	const setLoading = useSetRecoilState(spinnerState);
-	// 최근 탭
-	const [currentKey, setCurrentKey] = useState('');
+	// 비밀번호
+	const [password, setPassword] = useState('');
+	// 비밀번호 확인
+	const [checkState, , check] = useAsync(`/v2/auth/password`, 'post');
 
-	const onSaveKey = useCallback((e) => {
-		let data = JSON.parse(localStorage.getItem('data'));
-		data = { ...data, tabKey: e };
-		localStorage.setItem('data', JSON.stringify(data));
-	}, []);
+	// 확인 버튼 활성화
+	const disabled = useMemo(() => {
+		let isDisabled = false;
+		if ( !password ) {
+			return !isDisabled
+		}
+		return isDisabled;
+	}, [password]);
 
-	
+	// 비밀번호 확인
 	useEffect(() => {
-		if (errorMessage) {
-			Modal.warning({
-				title: '경고',
-				content: errorMessage
-			});
+		if (checkState === 'success') {
+			router.push('/mypage/myinfo');
 		}
-	}, []);
+	}, [checkState]);
 
-	// 탭 아이템
-	const items = [
-		{
-			label: '내 정보',
-			key: 'myinfo',
-			children: <MyInfo userKey={init.userKey} />
-		},
-		{
-			label: '비밀번호 변경',
-			key: 'password',
-			children: <MyPassword userKey={init.userKey} />
-		},
-		{
-			label: '내가 쓴 글',
-			key: 'history',
-			children: <MyHistory userKey={init.userKey} />
-		},
-		{
-			label: '탈퇴하기',
-			key: 'delete',
-			children: <DeleteUser userKey={init.userKey} />
-		}
-	];
+	// auto focus
+	const inputRef = useRef();
+	useEffect(() => {
+		inputRef.current.focus();
+	}, []);
 
 	return (
 		<Wrap url={resolvedUrl} isLogin={init.isLogin} userKey={init.userKey}>
 			<div className='mypage-container'>
-				<Tabs
-					tabPosition='left'
-					defaultActiveKey={[currentKey]}
-					onTabClick={(e) => onSaveKey(e)}
-					items={items} />
+				<Password
+					title='Password'
+					placeholder='비밀번호를 입력해 주세요.'
+					titleStyle={{ display: 'inline-block', width: '80px', textAlign: 'left' }}
+					style={{ width: 196 }}
+					inputRef={inputRef}
+					value={password}
+					onChange={(e) => setPassword(e.target.value)}
+				/>
+
+				<div className='button'>
+					<Button onClick={() => check({ password })} disabled={disabled} value='확인' />
+				</div>
 			</div>
 
 			<style jsx>{`
-			.mypage-container { margin: 0 auto; max-width: 923.46px; min-width: 600px; width: 100%; }
+			.mypage-container { margin: 0 auto; max-width: 923.46px; min-width: 600px; width: 100%; padding-top: 30px; }
+			.tab-container { margin: 10px auto; width: 80%; text-align: center; padding-top: 30px; }
+			.button { margin-top: 30px; text-align: center; }
 			`}</style>
 		</Wrap>
 	);
@@ -77,12 +73,6 @@ export default React.memo(Mypage);
 
 export const getServerSideProps = async ({ req, resolvedUrl }) => {
 	let init = await server(req);
-	// init {
-	// 	result: true,
-	// 	isLogin: true,
-	// 	token: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0eXBlIjoiSldUIiwidXNlcktleSI6MSwiaWQiOiJhIiwiaWF0IjoxNjY4NjE4NDE0LCJleHAiOjE2Njg3MDQ4MTQsImlzcyI6IuuwnOq4ieyekCJ9.3QRaB7z5pRHGNFXYkIXHSWK-JwAoA0CLMqUm82TaUOg',
-	// 	userKey: 1
-	// }
 
 	if (init.isLogin) {
 		return { props: { init, resolvedUrl }}

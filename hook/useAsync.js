@@ -1,6 +1,4 @@
 import React, { useState, useReducer, useCallback } from 'react';
-import { useSetRecoilState } from 'recoil';
-import spinnerState from '../atom/spinner';
 import API from '../modules/api';
 import { Modal } from 'antd';
 
@@ -36,12 +34,9 @@ export default function useAsync(url, method, token) {
 		data: null
 	});
 	const [data, setData] = useState([]);
-	// spinner
-	const setLoading = useSetRecoilState(spinnerState);
 
 	const fetchData = useCallback(async (params) => {
 		dispatch({ type: 'LOADING', data: data });
-		setLoading(true);
 		try {
 			// header에 token 추가
 			API.defaults.headers.common['Authorization'] = token;
@@ -54,14 +49,12 @@ export default function useAsync(url, method, token) {
 				}).then((response) => {
 					setData(() => response.data);
 					dispatch({ type: 'SUCCESS', data: response.data});
-					setLoading(false);
 				}).catch((error) => {
 					Modal.warning({
 						title: '오류',
 						content: error.response.data.message
 					});
 					dispatch({ type: 'ERROR', data: err.response });
-					setLoading(false);
 				});
 			}
 
@@ -73,20 +66,17 @@ export default function useAsync(url, method, token) {
 				}).then((response) => {
 					setData(() => response.data);
 					dispatch({ type: 'SUCCESS', data: response.data});
-					setLoading(false);
 				}).catch((error) => {
 					Modal.warning({
 						title: '오류',
 						content: error.response.data.message
 					});
 					dispatch({ type: 'ERROR', data: err.response });
-					setLoading(false);
 				});
 			}
 		}
 		catch (err) {
 			dispatch({ type: 'ERROR', data: err.response });
-			setLoading(false);
 		}
 
 	}, [url, method, token]);

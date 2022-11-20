@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useCallback, useRef } from 'react';
+import React, { useEffect, useState, useCallback, useRef, useMemo } from 'react';
 import router from 'next/router';
 import { server } from '../../modules/server';
 import useAsync from '../../hook/useAsync';
@@ -9,6 +9,10 @@ import Button from '../../components/global/Btn';
 import { Modal } from 'antd';
 
 function PostPage({ init, listKey }) {
+	// 제목, 작성자, 내용
+	const [title, setTitle] = useState('');
+	const [name, setName] = useState('');
+	const [description, setDescription] = useState('');
 	
 	// 게시글 조회
 	const [getPostState, getPostRes, getPost] = useAsync(`/v2/list/${listKey}`, 'get');	
@@ -16,11 +20,6 @@ function PostPage({ init, listKey }) {
 		getPost();
 	}, []);
 
-	// 제목, 작성자, 내용
-	const [title, setTitle] = useState('');
-	const [name, setName] = useState('');
-	const [description, setDescription] = useState('');
-	
 	useEffect(() => {
 		if (getPostState === 'success') {
 			setTitle(() => getPostRes.title);
@@ -33,23 +32,33 @@ function PostPage({ init, listKey }) {
 	}, [getPostState, getPostRes]);
 
 	// 수정 여부
-	const [edit, setEdit] = useState(false);
+	const [isEdit, setIsEdit] = useState(false);
 
 	// 게시글 수정
 	const [updateState, , update] = useAsync(`/v2/list/${listKey}`, 'patch');
 
+	// 수정 버튼 활성화
+	const disabled = useMemo(() => {
+		let isDisabled = false;
+		if ( !title || !description ) {
+			return !isDisabled
+		}
+		return isDisabled;
+	}, [title, description]);
+
+	// 수정하기
 	const onChangeEdit = useCallback(() => {
-		if (edit) {
+		if (isEdit) {
 			update({ title, description });
 		}
 		else {
-			setEdit(true);
+			setIsEdit(true);
 		}
 	}, [title, description]);
 
 	useEffect(() => {
 		if (updateState === 'success') {
-			setEdit(false);
+			setIsEdit(false);
 		}
 	}, [updateState]);
 
@@ -76,16 +85,16 @@ function PostPage({ init, listKey }) {
 					title='제목'
 					type='text'
 					placeholder='제목을 입력해 주세요.'
-					containerStyle={edit ? {} : { borderTop: '1px solid #aaa', borderBottom: '1px solid #aaa'}}
+					containerStyle={isEdit ? {} : { borderTop: '1px solid #aaa', borderBottom: '1px solid #aaa'}}
 					titleStyle={{ flex: 1, textAlign: 'center' }}
 					inputStyle={{ flex: 8 }}
 					style={{ display: 'block' }}
 					value={title}
 					onChange={(e) => setTitle(e.target.value)}
-					readOnly={edit ? false : true}
-					bordered={edit}
+					readOnly={isEdit ? false : true}
+					bordered={isEdit}
 				/>
-				{edit ?
+				{isEdit ?
 					<></> :
 					<Input
 						title='작성자'
@@ -102,21 +111,23 @@ function PostPage({ init, listKey }) {
 				<TextArea
 					title='내용'
 					placeholder='내용을 입력해 주세요.'
-					containerStyle={edit ? {} : { borderTop: '1px solid #aaa', borderBottom: '1px solid #aaa'}}
+					containerStyle={isEdit ? {} : { borderTop: '1px solid #aaa', borderBottom: '1px solid #aaa'}}
 					titleStyle={{ flex: 1, textAlign: 'center' }}
 					inputStyle={{ flex: 8 }}
 					style={{ minHeight: 285, resize: 'none' }}
 					value={description}
 					onChange={(e) => setDescription(e.target.value)}
-					readOnly={edit ? false : true}
-					bordered={edit}
+					readOnly={isEdit ? false : true}
+					bordered={isEdit}
 				/>
 			</div>
 
-			<div className='button'>
-				<Button value='수정하기' onClick={onChangeEdit} />
-				{ edit ? <></> : <Button value='삭제하기' onClick={() => setIsModalOpen(true)} style={{ margin: '0 5px' }} /> }
-			</div>
+			{ getPostRes?.userKey === init?.userKey ?
+				<div className='button'>
+					<Button value='수정하기' onClick={onChangeEdit} disabled={disabled} />
+					{ isEdit ? <></> : <Button value='삭제하기' onClick={() => setIsModalOpen(true)} style={{ margin: '0 5px' }} /> }
+				</div>
+			: <></>}
 
 			{/* 삭제 확인 모달 */}
 			<Modal title='알림' open={isModalOpen} onOk={onDelete} onCancel={() => setIsModalOpen(false)}>

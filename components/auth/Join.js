@@ -14,7 +14,7 @@ function Join() {
 	const [password, setPassword] = useState('');
 
 	// 회원가입
-	const [joinState, , join] = useAsync(`/v2/user`, 'post');
+	const [joinState, , join] = useAsync(`/v2/user/join`, 'post');
 	useEffect(() => {
 		if (joinState === 'success') {
 			Modal.info({
@@ -40,8 +40,8 @@ function Join() {
 				titleStyle={{ display: 'inline-block', width: '80px', textAlign: 'left' }}
 				style={{ width: 196 }}
 				inputRef={inputRef}
-				value={id}
-				onChange={(e) => setId(e.target.value)}
+				value={name}
+				onChange={(e) => setName(e.target.value)}
 			/>
 			<Input
 				title='ID'

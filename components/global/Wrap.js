@@ -14,7 +14,7 @@ function Wrap({ children, url, isLogin, userKey }) {
 	// 사용자 이름
 	const [userName, setUserName] = useRecoilState(userNameState);
 	
-	// 로그인 여부
+	// 로그인 여부, 이름 가져오기
 	useEffect(() => {
 		if (isLogin) {
 			setUserName(JSON.parse(localStorage.getItem('data')).name);

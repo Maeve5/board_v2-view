@@ -1,15 +1,19 @@
 import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
+import useAsync from '../../hook/useAsync';
 import { Pagination } from 'antd';
 
-function List({ state, res, fetchData }) {
+function List({ pageSize, userKey }) {
+	
+	// 게시글 목록 조회
+	const [state, res, fetchData] = useAsync('/v2/list', 'get');
+
 	// 페이지네이션
 	const [postArr, setPostArr] = useState([]);
-	const [pageSize] = useState(10);
 	const [currentPage, setCurrentPage] = useState(1);
 
 	useEffect(() => {
-		fetchData({	pageSize, currentPage });
+		fetchData({	pageSize, currentPage, userKey });
 	}, [currentPage]);
 
 	useEffect(() => {

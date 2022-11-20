@@ -8,9 +8,6 @@ import { server } from '../modules/server';
 import { Modal } from 'antd';
 
 function Home({ init, resolvedUrl, errorMessage }) {
-	
-	// 게시글 목록 조회
-	const [postState, postRes, fetchData] = useAsync('/v2/list', 'get');
 
 	useEffect(() => {
 		if (errorMessage) {
@@ -22,12 +19,12 @@ function Home({ init, resolvedUrl, errorMessage }) {
 	}, []);
 
 	return (
-		<Wrap path={resolvedUrl} isLogin={init.isLogin} userKey={init.userKey}>
+		<Wrap path={resolvedUrl} isLogin={init?.isLogin} userKey={init?.userKey}>
 			<div className='list-container'>
 				<div className='button'>
 					<Button value='글쓰기' onClick={() => router.push('/list/insert')} />
 				</div>
-				<List state={postState} res={postRes} fetchData={fetchData} pageSize={10} />
+				<List pageSize={10} />
 			</div>
 
 			<style jsx>{`
