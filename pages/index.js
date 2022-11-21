@@ -28,8 +28,6 @@ export default React.memo(Home);
 
 export const getServerSideProps = async ({ req, resolvedUrl }) => {
 	let init = await server(req);
-
-console.log(init);
 	// init {
 	// 	result: true,
 	// 	isLogin: true,

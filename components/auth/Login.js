@@ -27,7 +27,7 @@ function Login() {
 	}, [id, password]);
 
 	// 로그인
-	const [loginState, loginRes, login] = useAsync('/v2/auth/login', 'post');
+	const [loginState, , login] = useAsync('/v2/auth/login', 'post');
 	useEffect(() => {
 		if (loginState === 'success') {
 			Modal.info({
