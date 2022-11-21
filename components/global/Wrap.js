@@ -27,6 +27,7 @@ function Wrap({ children, url, isLogin, userKey }) {
 
 	useEffect(() => {
 		if (logoutState === 'success') {
+			Modal.success({ title: '로그아웃되었습니다.' });
 			localStorage.removeItem('data');
 			setIsModalOpen(false);
 			router.replace('/');
