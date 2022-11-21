@@ -7,7 +7,7 @@ import Button from './Btn';
 import { Layout, Menu, Modal } from 'antd';
 const { Header, Content } = Layout;
 
-function Wrap({ children, url, isLogin, userKey }) {
+function Wrap({ children, url, isLogin, userKey, name }) {
 
 	// 메뉴 활성화
 	const path = url?.slice(1);
@@ -17,9 +17,9 @@ function Wrap({ children, url, isLogin, userKey }) {
 	// 로그인 여부, 이름 가져오기
 	useEffect(() => {
 		if (isLogin) {
-			setUserName(JSON.parse(localStorage.getItem('data')).name);
+			setUserName(name);
 		}
-	}, []);
+	}, [isLogin, name, setUserName]);
 
 	// 로그아웃
 	const [isModalOpen, setIsModalOpen] = useState(false);
@@ -28,7 +28,6 @@ function Wrap({ children, url, isLogin, userKey }) {
 	useEffect(() => {
 		if (logoutState === 'success') {
 			Modal.success({ title: '로그아웃되었습니다.' });
-			localStorage.removeItem('data');
 			setIsModalOpen(false);
 			router.replace('/');
 		}

@@ -5,7 +5,7 @@ import { server } from '../../modules/server';
 
 function InsertPage({ init }) {
 	return (
-		<Wrap isLogin={init.isLogin} userKey={init.userKey}>
+		<Wrap isLogin={init.isLogin} userKey={init.userKey} name={init?.userName}>
 			<AddPost />
 		</Wrap>
 	);

@@ -30,8 +30,6 @@ function Login() {
 	const [loginState, loginRes, login] = useAsync('/v2/auth/login', 'post');
 	useEffect(() => {
 		if (loginState === 'success') {
-			// 사용자 이름 localStorage 저장
-			localStorage.setItem('data', JSON.stringify({name: `${loginRes.name}`}));
 			Modal.info({
 				title: '로그인',
 				content: '환영합니다.',

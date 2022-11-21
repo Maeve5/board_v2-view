@@ -86,7 +86,7 @@ function PostPage({ init, listKey }) {
 	}, [removeState]);
 
 	return (
-		<Wrap isLogin={init.isLogin} userKey={init.userKey}>
+		<Wrap isLogin={init.isLogin} userKey={init.userKey} name={init?.userName}>
 			<div className='container'>
 				<Input
 					title='제목'

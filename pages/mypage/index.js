@@ -35,7 +35,7 @@ function Mypage({ init, resolvedUrl }) {
 	}, []);
 
 	return (
-		<Wrap url={resolvedUrl} isLogin={init.isLogin} userKey={init.userKey}>
+		<Wrap url={resolvedUrl} isLogin={init.isLogin} userKey={init.userKey} name={init?.userName}>
 			<div className='mypage-container'>
 				<Password
 					title='Password'

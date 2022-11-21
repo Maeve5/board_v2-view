@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef, useMemo } from 'react';
-import { useSetRecoilState } from 'recoil';
+import { useRecoilState, useSetRecoilState } from 'recoil';
 import userNameState from '../../atom/userName';
 import spinnerState from '../../atom/spinner';
 import useAsync from '../../hook/useAsync';
@@ -12,7 +12,7 @@ function MyInfo({ userKey }) {
 	// id, name
 	const [id, setId] = useState('');
 	const [name, setName] = useState('')
-	const setUserName = useSetRecoilState(userNameState);
+	const [userName, setUserName] = useRecoilState(userNameState);
 
 	// spinner
 	const setLoading = useSetRecoilState(spinnerState);
@@ -43,7 +43,7 @@ function MyInfo({ userKey }) {
 	// 이름 변경 버튼 활성화
 	const disabled = useMemo(() => {
 		let isDisabled = false;
-		if ( !name || JSON.parse(localStorage.getItem('data')).name === name ) {
+		if ( !name || name === userRes.name ) {
 			return !isDisabled
 		}
 		return isDisabled;
@@ -54,9 +54,6 @@ function MyInfo({ userKey }) {
 	useEffect(() => {
 		if (editState === 'success') {
 			setUserName(name);
-			let data = JSON.parse(localStorage.getItem('data'));
-			data = { ...data, name: name };
-			localStorage.setItem('data', JSON.stringify(data));
 			Modal.success({ title : '수정되었습니다.' });
 		}
 	}, [editState, name, setUserName]);

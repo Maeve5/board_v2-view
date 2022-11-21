@@ -1,16 +1,14 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 import router from 'next/router';
 import Wrap from '../components/global/Wrap';
 import Button from '../components/global/Btn';
 import List from '../components/list/List';
-import useAsync from '../hook/useAsync';
 import { server } from '../modules/server';
-import { Modal } from 'antd';
 
 function Home({ init, resolvedUrl }) {
 
 	return (
-		<Wrap path={resolvedUrl} isLogin={init?.isLogin} userKey={init?.userKey}>
+		<Wrap path={resolvedUrl} isLogin={init?.isLogin} userKey={init?.userKey} name={init?.userName}>
 			<div className='list-container'>
 				<div className='button'>
 					<Button value='글쓰기' onClick={() => router.push('/list/insert')} />
@@ -30,11 +28,14 @@ export default React.memo(Home);
 
 export const getServerSideProps = async ({ req, resolvedUrl }) => {
 	let init = await server(req);
+
+console.log(init);
 	// init {
 	// 	result: true,
 	// 	isLogin: true,
 	// 	token: '',
-	// 	userKey: init
+	// 	userKey: init,
+	//  userName: ''
 	// }
 
 	if (init.result) {

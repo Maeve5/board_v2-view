@@ -8,7 +8,7 @@ function MyInfoPage({ init, resolvedUrl }) {
 
 	return (
 		<>
-			<Wrap userkey={init?.userKey} isLogin={init?.isLogin} url='/mypage'>
+			<Wrap userkey={init?.userKey} isLogin={init?.isLogin} name={init?.userName} url='/mypage'>
 			<div className='mypage-container'>
 				<div className='nav-container'>
 					<MyPageNav url={resolvedUrl} />
