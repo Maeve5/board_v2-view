@@ -7,16 +7,7 @@ import useAsync from '../hook/useAsync';
 import { server } from '../modules/server';
 import { Modal } from 'antd';
 
-function Home({ init, resolvedUrl, errorMessage }) {
-
-	useEffect(() => {
-		if (errorMessage) {
-			Modal.warning({
-				title: '경고',
-				content: errorMessage
-			});
-		}
-	}, []);
+function Home({ init, resolvedUrl }) {
 
 	return (
 		<Wrap path={resolvedUrl} isLogin={init?.isLogin} userKey={init?.userKey}>

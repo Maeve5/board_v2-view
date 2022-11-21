@@ -33,12 +33,14 @@ export default React.memo(MyInfoPage);
 export const getServerSideProps = async ({ req, resolvedUrl }) => {
 	let init = await server(req);
 
-	if (init.result) {
+	if (init.isLogin) {
 		return { props: { init, resolvedUrl }}
 	}
 	else {
 		return {
-			props: {
+			redirect: {
+				permanent: false,
+				destination: '/auth/login',
 				errorMessage: init.errorMessage ? init.errorMessage : null
 			}
 		}

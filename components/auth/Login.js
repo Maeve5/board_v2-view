@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, useMemo } from 'react';
 import router from 'next/router';
 import useAsync from '../../hook/useAsync';
 import Input from '../global/InputText';
@@ -10,9 +10,24 @@ function Login() {
 	// id, password
 	const [id, setId] = useState('');
 	const [password, setPassword] = useState('');
+
+	// auto focus
+	const inputRef = useRef();
+	useEffect(() => {
+		inputRef.current.focus();
+	}, []);
+
+	// 로그인 버튼 활성화
+	const disabled = useMemo(() => {
+		let isDisabled = false;
+		if ( !id || !password ) {
+			return !isDisabled
+		}
+		return isDisabled;
+	}, [id, password]);
+
 	// 로그인
 	const [loginState, loginRes, login] = useAsync('/v2/auth/login', 'post');
-	
 	useEffect(() => {
 		if (loginState === 'success') {
 			// 사용자 이름 localStorage 저장
@@ -25,12 +40,6 @@ function Login() {
 		}
 	}, [loginState]);
 
-	// auto focus
-	const inputRef = useRef();
-	useEffect(() => {
-		inputRef.current.focus();
-	}, []);
-	
 	return (
 		<>
 			<div className='login'>
@@ -54,7 +63,7 @@ function Login() {
 				/>
 			</div>
 			<div className='button'>
-				<Button onClick={() => login({ id, password })} value='로그인' />
+				<Button onClick={() => login({ id, password })} value='로그인' disabled={disabled} />
 			</div>
 			
 			<style jsx>{`

@@ -1,5 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
+import { useRecoilState } from 'recoil';
+import spinnerState from '../../atom/spinner';
+import Spinner from '../../components/global/Spinner';
 import useAsync from '../../hook/useAsync';
 import { Pagination } from 'antd';
 
@@ -12,57 +15,67 @@ function List({ pageSize, userKey }) {
 	const [postArr, setPostArr] = useState([]);
 	const [currentPage, setCurrentPage] = useState(1);
 
+	// spinner
+	const [loading, setLoading] = useRecoilState(spinnerState);
+
+	// userKey 있으면 해당 사용자가 쓴 글만 조회
 	useEffect(() => {
 		fetchData({	pageSize, currentPage, userKey });
 	}, [currentPage]);
 
 	useEffect(() => {
+		setLoading(true);
 		if (state === 'success') {
 			setPostArr(() => res.list);
+			setLoading(false);
 		}
 	}, [state]);
 
 	return (
 		<>
-			<div className='list'>
-				<table className='container'>
-					<thead>
-						<tr className='th'>
-							<th width='8%'>번호</th>
-							<th width='55%'>제목</th>
-							<th width='17%'>작성자</th>
-							<th width='20%'>작성일</th>
-						</tr>
-					</thead>
-					<tbody>
-						{postArr.length === 0 ?
-							// 게시글 없을 때
-							<tr>
-								<td colSpan='4' height='100' className='no-list'>등록된 게시글이 없습니다.</td>
-							</tr> :
-							// 게시글 있을 때
-							postArr.map((row) => {
-								return (
-									<tr key={row.rowKey} className='td'>
-										<td width='8%'>{row.rowKey}</td>
-										<td width='55%'>
-											<Link href={`/list/${row.rowKey}`}>
-												<div style={{ color: 'black' }}>{row.title}</div>
-											</Link>
-										</td>
-										<td width='17%'>{row.name}</td>
-										<td width='20%'>{row.createdTime}</td>
-									</tr>
-								)
-							})
-						}
-					</tbody>
-				</table>
-			</div>
+			{loading ? <></> :
+				<>
+					<div className='list'>
+						<table className='container'>
+							<thead>
+								<tr className='th'>
+									<th width='8%'>번호</th>
+									<th width='55%'>제목</th>
+									<th width='17%'>작성자</th>
+									<th width='20%'>작성일</th>
+								</tr>
+							</thead>
+							<tbody>
+								{postArr.length === 0 ?
+									// 게시글 없을 때
+									<tr>
+										<td colSpan='4' height='100' className='no-list'>등록된 게시글이 없습니다.</td>
+									</tr> :
+									// 게시글 있을 때
+									postArr.map((row) => {
+										return (
+											<tr key={row.rowKey} className='td'>
+												<td width='8%'>{row.rowKey}</td>
+												<td width='55%'>
+													<Link href={`/list/${row.rowKey}`}>
+														<div style={{ color: 'black' }}>{row.title}</div>
+													</Link>
+												</td>
+												<td width='17%'>{row.name}</td>
+												<td width='20%'>{row.createdTime}</td>
+											</tr>
+										)
+									})
+								}
+							</tbody>
+						</table>
+					</div>
 
-			<div className='pagination'>
-				<Pagination onChange={(e) => setCurrentPage(e)} defaultCurrent={currentPage} current={currentPage} pageSize={pageSize} total={res ? res.length : 0} />
-			</div>
+					<div className='pagination'>
+						<Pagination onChange={(e) => setCurrentPage(e)} defaultCurrent={currentPage} current={currentPage} pageSize={pageSize} total={res ? res.length : 0} />
+					</div>
+				</>
+			}
 
 			<style jsx>{`
 			.list { display: block; margin: 0 auto; width: 100%; min-width: 600px; text-align: center; }

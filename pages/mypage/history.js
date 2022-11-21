@@ -14,7 +14,7 @@ function HistoryPage({ init, resolvedUrl }) {
 					<MyPageNav url={resolvedUrl} />
 				</div>
 				<div className='item-container'>
-					<MyHistory userKey={init.userKey} />
+					<MyHistory userKey={init?.userKey} />
 				</div>
 			</div>
 			</Wrap>
@@ -33,12 +33,14 @@ export default React.memo(HistoryPage);
 export const getServerSideProps = async ({ req, resolvedUrl }) => {
 	let init = await server(req);
 
-	if (init.result) {
+	if (init.isLogin) {
 		return { props: { init, resolvedUrl }}
 	}
 	else {
 		return {
-			props: {
+			redirect: {
+				permanent: false,
+				destination: '/auth/login',
 				errorMessage: init.errorMessage ? init.errorMessage : null
 			}
 		}

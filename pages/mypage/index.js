@@ -1,26 +1,18 @@
-import React, { useState, useEffect, useCallback, useRef, useMemo } from 'react';
+import React, { useState, useEffect, useRef, useMemo } from 'react';
 import { router } from 'next/router';
-import { useSetRecoilState } from 'recoil';
-import spinnerState from '../../atom/spinner';
 import Wrap from '../../components/global/Wrap';
 import Password from '../../components/global/InputPassword';
 import Button from '../../components/global/Btn';
-import MyInfo from '../../components/mypage/MyInfo';
-import MyPassword from '../../components/mypage/MyPassword';
-import MyHistory from '../../components/mypage/MyHistory';
-import DeleteUser from '../../components/mypage/DeleteUser';
 import useAsync from '../../hook/useAsync';
 import { server } from '../../modules/server';
-import MyPageNav from '../../components/mypage/MyPageNav';
 
-function Mypage({ init, resolvedUrl, errorMessage }) {
+function Mypage({ init, resolvedUrl }) {
 
 	// 비밀번호
 	const [password, setPassword] = useState('');
 	// 비밀번호 확인
 	const [checkState, , check] = useAsync(`/v2/auth/password`, 'post');
-
-	// 확인 버튼 활성화
+	// 비밀번호 확인 버튼 활성화
 	const disabled = useMemo(() => {
 		let isDisabled = false;
 		if ( !password ) {

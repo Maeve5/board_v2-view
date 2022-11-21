@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect } from 'react';
+import React, { useState, useRef, useEffect, useMemo } from 'react';
 import router from 'next/router';
 import useAsync from '../../hook/useAsync';
 import Input from '../global/InputText';
@@ -10,20 +10,29 @@ function AddPost() {
 	// 제목, 내용
 	const [title, setTitle] = useState('');
 	const [description, setDescription] = useState('');
-	// 게시글 등록
-	const [insertState, , insert] = useAsync('/v2/list', 'post');
-
-	useEffect(() => {
-		if (insertState === 'success') {
-			router.push('/');
-		}
-	}, [insertState]);
 
 	// auto focus
 	const titleInput = useRef();
 	useEffect(() => {
 		titleInput.current.focus();
 	}, []);
+
+	// 이름 변경 버튼 활성화
+	const disabled = useMemo(() => {
+		let isDisabled = false;
+		if ( !title || !description ) {
+			return !isDisabled
+		}
+		return isDisabled;
+	}, [title, description]);
+
+	// 게시글 등록
+	const [insertState, , insert] = useAsync('/v2/list', 'post');
+	useEffect(() => {
+		if (insertState === 'success') {
+			router.push('/');
+		}
+	}, [insertState]);
 
 	return (
 		<div className='insert-container'>
@@ -48,7 +57,7 @@ function AddPost() {
 				onChange={(e) => setDescription(e.target.value)}
 			/>
 			<div className='button'>
-				<Button value='게시하기' onClick={() => insert({ title, description })} />
+				<Button value='게시하기' onClick={() => insert({ title, description })} disabled={disabled} />
 			</div>
 
 			<style jsx>{`

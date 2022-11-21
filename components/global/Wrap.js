@@ -29,7 +29,7 @@ function Wrap({ children, url, isLogin, userKey }) {
 		if (logoutState === 'success') {
 			localStorage.removeItem('data');
 			setIsModalOpen(false);
-			router.push('/');
+			router.replace('/');
 		}
 	}, [logoutState]);
 

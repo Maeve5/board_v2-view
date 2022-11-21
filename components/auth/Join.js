@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, useMemo } from 'react';
 import router from 'next/router';
 import useAsync from '../../hook/useAsync';
 import Input from '../global/InputText';
@@ -13,6 +13,21 @@ function Join() {
 	const [id, setId] = useState('');
 	const [password, setPassword] = useState('');
 
+	// auto focus
+	const inputRef = useRef();
+	useEffect(() => {
+		inputRef.current.focus();
+	}, []);
+
+	// 회원가입 버튼 활성화
+	const disabled = useMemo(() => {
+		let isDisabled = false;
+		if ( !name || !id || !password ) {
+			return !isDisabled
+		}
+		return isDisabled;
+	}, [name, id, password]);
+
 	// 회원가입
 	const [joinState, , join] = useAsync(`/v2/user/join`, 'post');
 	useEffect(() => {
@@ -24,12 +39,6 @@ function Join() {
 			router.push('/auth/login');
 		}
 	}, [joinState]);
-
-	// auto focus
-	const inputRef = useRef();
-	useEffect(() => {
-		inputRef.current.focus();
-	}, []);
 
 	return (
 		<div className='join'>
@@ -61,7 +70,7 @@ function Join() {
 				onChange={(e) => setPassword(e.target.value)}
 			/>
 			<div className='button'>
-				<Button onClick={() => join({ name, id, password })} value='가입하기' />
+				<Button onClick={() => join({ name, id, password })} value='가입하기' disabled={disabled} />
 			</div>
 
 			<style jsx>{`

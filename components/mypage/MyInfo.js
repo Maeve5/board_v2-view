@@ -1,4 +1,4 @@
-import React, { useState, useCallback, useEffect, useRef, useMemo } from 'react';
+import React, { useState, useEffect, useRef, useMemo } from 'react';
 import { useSetRecoilState } from 'recoil';
 import userNameState from '../../atom/userName';
 import spinnerState from '../../atom/spinner';
@@ -9,15 +9,36 @@ import { Modal } from 'antd';
 
 function MyInfo({ userKey }) {
 
-	// 회원 정보 조회
-	const [userState, userRes, getUser] = useAsync(`/v2/user/${userKey}`, 'get');
-	// spinner
-	const setLoading = useSetRecoilState(spinnerState);
-
 	// id, name
 	const [id, setId] = useState('');
 	const [name, setName] = useState('')
 	const setUserName = useSetRecoilState(userNameState);
+
+	// spinner
+	const setLoading = useSetRecoilState(spinnerState);
+
+	// 회원 정보 조회
+	const [userState, userRes, getUser] = useAsync(`/v2/user/${userKey}`, 'get');
+	useEffect(() => {
+		setLoading(true);
+		if (userState === 'done') {
+			getUser();
+		}
+		if (userState === 'success') {
+			setId(userRes.id);
+			setName(userRes.name);
+			setLoading(false);
+		}
+		else {
+			setLoading(false);
+		}
+	}, [userState]);
+
+	// auto focus
+	const inputRef = useRef();
+	useEffect(() => {
+		inputRef.current.focus();
+	}, []);
 
 	// 이름 변경 버튼 활성화
 	const disabled = useMemo(() => {
@@ -31,21 +52,6 @@ function MyInfo({ userKey }) {
 	// 이름 변경
 	const [editState, , edit] = useAsync(`/v2/user/${userKey}`, 'patch');
 	useEffect(() => {
-		if (userState === 'done') {
-			getUser();
-			setLoading(true);
-		}
-		if (userState === 'success') {
-			setId(userRes.id);
-			setName(userRes.name);
-			setLoading(false);
-		}
-		else {
-			setLoading(false);
-		}
-	}, [userState]);
-
-	useEffect(() => {
 		if (editState === 'success') {
 			setUserName(name);
 			let data = JSON.parse(localStorage.getItem('data'));
@@ -53,13 +59,7 @@ function MyInfo({ userKey }) {
 			localStorage.setItem('data', JSON.stringify(data));
 			Modal.success({ title : '수정되었습니다.' });
 		}
-	}, [editState]);
-
-	// auto focus
-	const inputRef = useRef();
-	useEffect(() => {
-		inputRef.current.focus();
-	}, []);
+	}, [editState, name, setUserName]);
 
 	return (
 		<div className='tab-container'>

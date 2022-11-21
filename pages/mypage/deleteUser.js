@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 import { server } from '../../modules/server';
 import Wrap from '../../components/global/Wrap';
 import MyPageNav from "../../components/mypage/MyPageNav";
@@ -14,7 +14,7 @@ function DeletePage({ init, resolvedUrl }) {
 					<MyPageNav url={resolvedUrl} />
 				</div>
 				<div className='item-container'>
-					<DeleteUser userKey={init.userKey} />
+					<DeleteUser userKey={init?.userKey} />
 				</div>
 			</div>
 			</Wrap>
@@ -33,12 +33,14 @@ export default React.memo(DeletePage);
 export const getServerSideProps = async ({ req, resolvedUrl }) => {
 	let init = await server(req);
 
-	if (init.result) {
+	if (init.isLogin) {
 		return { props: { init, resolvedUrl }}
 	}
 	else {
 		return {
-			props: {
+			redirect: {
+				permanent: false,
+				destination: '/auth/login',
 				errorMessage: init.errorMessage ? init.errorMessage : null
 			}
 		}

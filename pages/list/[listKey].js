@@ -1,6 +1,8 @@
 import React, { useEffect, useState, useCallback, useRef, useMemo } from 'react';
 import router from 'next/router';
 import { server } from '../../modules/server';
+import { useSetRecoilState } from 'recoil';
+import spinnerState from '../../atom/spinner';
 import useAsync from '../../hook/useAsync';
 import Wrap from '../../components/global/Wrap';
 import Input from '../../components/global/InputText';
@@ -9,22 +11,28 @@ import Button from '../../components/global/Btn';
 import { Modal } from 'antd';
 
 function PostPage({ init, listKey }) {
+
 	// 제목, 작성자, 내용
 	const [title, setTitle] = useState('');
 	const [name, setName] = useState('');
 	const [description, setDescription] = useState('');
+
+	// spinner
+	const setLoading = useSetRecoilState(spinnerState);
 	
 	// 게시글 조회
 	const [getPostState, getPostRes, getPost] = useAsync(`/v2/list/${listKey}`, 'get');	
-	useEffect(() => {
-		getPost();
-	}, []);
 
 	useEffect(() => {
+		setLoading(true);
+		if (getPostState === 'done') {
+			getPost();
+		}
 		if (getPostState === 'success') {
 			setTitle(() => getPostRes.title);
 			setName(() => getPostRes.name);
 			setDescription(() => getPostRes.description);
+			setLoading(false);
 		}
 		if (getPostState === 'error') {
 			router.push('/404');
@@ -54,27 +62,26 @@ function PostPage({ init, listKey }) {
 		else {
 			setIsEdit(true);
 		}
-	}, [title, description]);
+	}, [isEdit, update, title, description]);
 
 	useEffect(() => {
+		setLoading(true);
 		if (updateState === 'success') {
 			setIsEdit(false);
+			getPost();
+			setLoading(false);
 		}
 	}, [updateState]);
 
-	// 게시글 삭제
-	const [removeState, , remove] = useAsync(`/v2/list/${listKey}`, 'delete');
-
 	// 삭제 확인 모달
 	const [isModalOpen, setIsModalOpen] = useState(false);
-	const onDelete = useCallback(() => {
-		remove();
-	}, []);
-
+	
+	// 게시글 삭제
+	const [removeState, , remove] = useAsync(`/v2/list/${listKey}`, 'delete');
 	useEffect(() => {
 		if (removeState === 'success') {
-			Modal.info({ title: '삭제완료' });
-			router.push('/');
+			Modal.success({ title: '삭제완료' });
+			router.replace('/');
 		}
 	}, [removeState]);
 
@@ -130,7 +137,7 @@ function PostPage({ init, listKey }) {
 			: <></>}
 
 			{/* 삭제 확인 모달 */}
-			<Modal title='알림' open={isModalOpen} onOk={onDelete} onCancel={() => setIsModalOpen(false)}>
+			<Modal title='알림' open={isModalOpen} onOk={() => remove()} onCancel={() => setIsModalOpen(false)}>
 				<p>삭제하시겠습니까?</p>
 			</Modal>
 
