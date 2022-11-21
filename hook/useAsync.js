@@ -38,9 +38,7 @@ export default function useAsync(url, method, token) {
 	const fetchData = useCallback(async (params) => {
 		dispatch({ type: 'LOADING', data: data });
 		try {
-			// header에 token 추가
-			API.defaults.headers.common['Authorization'] = token;
-
+			// method가 get, delete일 때
 			if (['get', 'delete'].includes(method)) {
 				await API({
 					url: url,
@@ -57,7 +55,7 @@ export default function useAsync(url, method, token) {
 					dispatch({ type: 'ERROR', data: err.response });
 				});
 			}
-
+			// method가 post, patch, put일 때
 			else if (['post', 'patch', 'put'].includes(method)) {
 				await API({
 					url: url,
