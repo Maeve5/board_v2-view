@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import router from 'next/router';
 import Wrap from '../components/global/Wrap';
 import Button from '../components/global/Btn';
@@ -27,18 +27,18 @@ function Home({ init, resolvedUrl }) {
 export default React.memo(Home);
 
 export const getServerSideProps = async ({ req, resolvedUrl }) => {
-	
+
 	let init = await server(req);
 	// init {
-		// 	result: true,
-		// 	isLogin: true,
-		// 	token: '',
-		// 	userKey: init,
-		//  userName: ''
-		// }
-		
+	// 	result: true,
+	// 	isLogin: true,
+	// 	token: '',
+	// 	userKey: init,
+	//  userName: ''
+	// }
+
 	if (init.result) {
-		return { props: { init, resolvedUrl }}
+		return { props: { init, resolvedUrl } }
 	}
 	else {
 		return {

@@ -36,7 +36,6 @@ function Login() {
 			});
 			router.push('/');
 		}
-		console.log(loginState);
 	}, [loginState]);
 
 	return (

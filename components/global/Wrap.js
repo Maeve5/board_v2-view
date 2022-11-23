@@ -11,13 +11,14 @@ function Wrap({ children, url, isLogin, userKey, name }) {
 
 	// 메뉴 활성화
 	const path = url?.slice(1);
-	// 사용자 이름
+	// 사용자 이름 atom 저장
 	const [userName, setUserName] = useRecoilState(userNameState);
 	
 	// 로그인 여부, 이름 가져오기
 	useEffect(() => {
 		if (isLogin) {
 			setUserName(name);
+
 		}
 	}, [isLogin, name, setUserName]);
 
