@@ -27,15 +27,16 @@ function Home({ init, resolvedUrl }) {
 export default React.memo(Home);
 
 export const getServerSideProps = async ({ req, resolvedUrl }) => {
+	
 	let init = await server(req);
 	// init {
-	// 	result: true,
-	// 	isLogin: true,
-	// 	token: '',
-	// 	userKey: init,
-	//  userName: ''
-	// }
-
+		// 	result: true,
+		// 	isLogin: true,
+		// 	token: '',
+		// 	userKey: init,
+		//  userName: ''
+		// }
+		
 	if (init.result) {
 		return { props: { init, resolvedUrl }}
 	}

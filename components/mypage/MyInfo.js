@@ -43,11 +43,11 @@ function MyInfo({ userKey }) {
 	// 이름 변경 버튼 활성화
 	const disabled = useMemo(() => {
 		let isDisabled = false;
-		if ( !name || name === userRes.name ) {
+		if ( !name || name === userName ) {
 			return !isDisabled
 		}
 		return isDisabled;
-	}, [name]);
+	}, [name, userName]);
 
 	// 이름 변경
 	const [editState, , edit] = useAsync(`/v2/user/${userKey}`, 'patch');
@@ -56,7 +56,7 @@ function MyInfo({ userKey }) {
 			setUserName(name);
 			Modal.success({ title : '수정되었습니다.' });
 		}
-	}, [editState, name, setUserName]);
+	}, [editState]);
 
 	return (
 		<div className='tab-container'>
