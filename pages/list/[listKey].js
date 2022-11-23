@@ -19,9 +19,9 @@ function PostPage({ init, listKey }) {
 
 	// spinner
 	const setLoading = useSetRecoilState(spinnerState);
-	
+
 	// 게시글 조회
-	const [getPostState, getPostRes, getPost] = useAsync(`/v2/list/${listKey}`, 'get');	
+	const [getPostState, getPostRes, getPost] = useAsync(`/v2/list/${listKey}`, 'get');
 
 	useEffect(() => {
 		setLoading(true);
@@ -48,7 +48,7 @@ function PostPage({ init, listKey }) {
 	// 수정 버튼 활성화
 	const disabled = useMemo(() => {
 		let isDisabled = false;
-		if ( !title || !description ) {
+		if (!title || !description) {
 			return !isDisabled
 		}
 		return isDisabled;
@@ -71,11 +71,14 @@ function PostPage({ init, listKey }) {
 			getPost();
 			setLoading(false);
 		}
+		else {
+			setLoading(false);
+		}
 	}, [updateState]);
 
 	// 삭제 확인 모달
 	const [isModalOpen, setIsModalOpen] = useState(false);
-	
+
 	// 게시글 삭제
 	const [removeState, , remove] = useAsync(`/v2/list/${listKey}`, 'delete');
 	useEffect(() => {
@@ -92,7 +95,7 @@ function PostPage({ init, listKey }) {
 					title='제목'
 					type='text'
 					placeholder='제목을 입력해 주세요.'
-					containerStyle={isEdit ? {} : { borderTop: '1px solid #aaa', borderBottom: '1px solid #aaa'}}
+					containerStyle={isEdit ? {} : { borderTop: '1px solid #aaa', borderBottom: '1px solid #aaa' }}
 					titleStyle={{ flex: 1, textAlign: 'center' }}
 					inputStyle={{ flex: 8 }}
 					style={{ display: 'block' }}
@@ -106,7 +109,7 @@ function PostPage({ init, listKey }) {
 					<Input
 						title='작성자'
 						type='text'
-						containerStyle={{ borderTop: '1px solid #aaa', borderBottom: '1px solid #aaa'}}
+						containerStyle={{ borderTop: '1px solid #aaa', borderBottom: '1px solid #aaa' }}
 						titleStyle={{ flex: 1, textAlign: 'center' }}
 						inputStyle={{ flex: 8 }}
 						style={{ display: 'block' }}
@@ -118,7 +121,7 @@ function PostPage({ init, listKey }) {
 				<TextArea
 					title='내용'
 					placeholder='내용을 입력해 주세요.'
-					containerStyle={isEdit ? {} : { borderTop: '1px solid #aaa', borderBottom: '1px solid #aaa'}}
+					containerStyle={isEdit ? {} : { borderTop: '1px solid #aaa', borderBottom: '1px solid #aaa' }}
 					titleStyle={{ flex: 1, textAlign: 'center' }}
 					inputStyle={{ flex: 8 }}
 					style={{ minHeight: 285, resize: 'none' }}
@@ -129,12 +132,15 @@ function PostPage({ init, listKey }) {
 				/>
 			</div>
 
-			{ getPostRes?.userKey === init?.userKey ?
-				<div className='button'>
-					<Button value='수정하기' onClick={onChangeEdit} disabled={disabled} />
-					{ isEdit ? <></> : <Button value='삭제하기' onClick={() => setIsModalOpen(true)} style={{ margin: '0 5px' }} /> }
-				</div>
-			: <></>}
+			<div className='button'>
+				<Button value='목록으로' type='primary' onClick={() => router.back()} style={{ margin: '0 5px' }} />
+				{getPostRes?.userKey === init?.userKey ?
+					<>
+						<Button value='수정하기' onClick={onChangeEdit} disabled={disabled} />
+						{isEdit ? <></> : <Button value='삭제하기' onClick={() => setIsModalOpen(true)} style={{ margin: '0 5px' }} />}
+					</>
+					: <></>}
+			</div>
 
 			{/* 삭제 확인 모달 */}
 			<Modal title='알림' open={isModalOpen} onOk={() => remove()} onCancel={() => setIsModalOpen(false)}>

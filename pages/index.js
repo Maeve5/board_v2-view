@@ -42,7 +42,9 @@ export const getServerSideProps = async ({ req, resolvedUrl }) => {
 	}
 	else {
 		return {
-			props: {
+			redirect: {
+				permanent: false,
+				destination: '/auth/login',
 				errorMessage: init.errorMessage ? init.errorMessage : null
 			}
 		}

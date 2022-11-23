@@ -2,7 +2,6 @@ import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { useRecoilState } from 'recoil';
 import spinnerState from '../../atom/spinner';
-import Spinner from '../../components/global/Spinner';
 import useAsync from '../../hook/useAsync';
 import { Pagination } from 'antd';
 
@@ -29,6 +28,11 @@ function List({ pageSize, userKey }) {
 			setPostArr(() => res.list);
 			setLoading(false);
 		}
+		else {
+			setLoading(false);
+		}
+		console.log('res', res);
+		console.log('state', state);
 	}, [state]);
 
 	return (

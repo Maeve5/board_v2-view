@@ -77,7 +77,7 @@ function Wrap({ children, url, isLogin, userKey, name }) {
 							<Button onClick={() => setIsModalOpen(true)} value='로그아웃' />
 						</>
 						: <>
-							<Button style={{ marginRight: '5px' }} onClick={() => router.push('/auth/login')} value='로그인' />
+							<Button type='primary' style={{ marginRight: '5px' }} onClick={() => router.push('/auth/login')} value='로그인' />
 							<Button onClick={() => router.push('/auth/join')} value='회원가입' />
 						</>
 					}

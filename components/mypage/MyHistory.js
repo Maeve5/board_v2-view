@@ -1,6 +1,5 @@
 import React from 'react';
 import List from '../list/List';
-import useAsync from '../../hook/useAsync';
 
 function MyHistory({ userKey }) {
 
