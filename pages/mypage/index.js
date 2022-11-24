@@ -64,6 +64,7 @@ function Mypage({ init, resolvedUrl }) {
 export default React.memo(Mypage);
 
 export const getServerSideProps = async ({ req, resolvedUrl }) => {
+	console.log('d');
 	let init = await server(req);
 
 	if (init.isLogin) {

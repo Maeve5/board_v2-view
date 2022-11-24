@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 import router from 'next/router';
 import Wrap from '../components/global/Wrap';
 import Button from '../components/global/Btn';
@@ -27,6 +27,7 @@ function Home({ init, resolvedUrl }) {
 export default React.memo(Home);
 
 export const getServerSideProps = async ({ req, resolvedUrl }) => {
+	// console.log(req.cookies);
 
 	let init = await server(req);
 	// init {
@@ -44,7 +45,6 @@ export const getServerSideProps = async ({ req, resolvedUrl }) => {
 		return {
 			redirect: {
 				permanent: false,
-				destination: '/auth/login',
 				errorMessage: init.errorMessage ? init.errorMessage : null
 			}
 		}

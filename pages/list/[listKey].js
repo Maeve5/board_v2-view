@@ -133,7 +133,9 @@ function PostPage({ init, listKey }) {
 			</div>
 
 			<div className='button'>
-				<Button value='목록으로' type='primary' onClick={() => router.back()} style={{ margin: '0 5px' }} />
+				{/* 수정모드일 때 수정하기 버튼만 보이기 */}
+				{isEdit ? <></> : <Button value='목록으로' type='primary' onClick={() => router.back()} style={{ margin: '0 5px' }} />}
+				{/* 작성자일 때 수정, 삭제 버튼 보이기 */}
 				{getPostRes?.userKey === init?.userKey ?
 					<>
 						<Button value='수정하기' onClick={onChangeEdit} disabled={disabled} />
