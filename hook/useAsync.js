@@ -27,7 +27,7 @@ const reducer = (state, action) => {
 	}
 };
 
-export default function useAsync(url, method, token) {
+export default function useAsync(url, method) {
 
 	const [state, dispatch] = useReducer(reducer, {
 		state: 'done',
@@ -77,7 +77,7 @@ export default function useAsync(url, method, token) {
 			dispatch({ type: 'ERROR', data: err.response });
 		}
 
-	}, [url, method, token]);
+	}, [url, method]);
 
 	return [state.state, state.data, fetchData];
 };
