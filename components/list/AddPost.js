@@ -68,6 +68,8 @@ function AddPost() {
 
 	}, [file]);
 
+	
+
 return (
 	<div className='insert-container'>
 		<Input
@@ -90,11 +92,11 @@ return (
 			value={description}
 			onChange={(e) => setDescription(e.target.value)}
 		/>
-		<form action='./AddPost' method='post' encType='multipart/form-data'>
+		{/* <form action='./AddPost' method='post' encType='multipart/form-data'> */}
 			<input type='file' name='file' onChange={(e) => handleInputImg(e)} accept='image/png, image/jpeg' />
 
 			<button type='submit' onClick={(e) => handleFormData(e)}>업로드</button>
-		</form>
+		{/* </form> */}
 
 		<div className='button'>
 			<Button value='게시하기' onClick={() => insert({ title, description })} disabled={disabled} />

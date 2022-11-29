@@ -45,6 +45,7 @@ export const getServerSideProps = async ({ req, resolvedUrl }) => {
 		return {
 			redirect: {
 				permanent: false,
+				destination: '/auth/login',
 				errorMessage: init.errorMessage ? init.errorMessage : null
 			}
 		}
