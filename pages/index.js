@@ -27,9 +27,8 @@ function Home({ init, resolvedUrl }) {
 export default React.memo(Home);
 
 export const getServerSideProps = async ({ req, resolvedUrl }) => {
-	// console.log(req.cookies);
 
-	let init = await server(req);
+	let init = await server(req, resolvedUrl);
 	// init {
 	// 	result: true,
 	// 	isLogin: true,

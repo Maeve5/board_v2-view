@@ -31,8 +31,6 @@ function List({ pageSize, userKey }) {
 		else {
 			setLoading(false);
 		}
-		console.log('state', state);
-		console.log('res', res);
 	}, [state]);
 
 	return (

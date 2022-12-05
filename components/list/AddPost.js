@@ -35,27 +35,35 @@ function AddPost() {
 		}
 	}, [insertState]);
 
-	const [file, setFile] = useState(null);
+	// 파일
+	const [file, setFile] = useState();
 
+	// 업로드할 파일 리스트
 	const handleInputImg = useCallback(async (e) => {
-		setFile(e.target.files[0]);
-	}, []);
+		const imgLists = e.target.files;
+		setFile(imgLists);
+	}, [file]);
 
-	const handleFormData = useCallback(async (e) => {
+	// 게시글 + 파일 게시
+	const submitData = useCallback(async (e) => {
 		e.preventDefault();
 
+		insert({ title, description });
+		
 		const formData = new FormData();
-		formData.append('img', file);
-		console.log(formData.getAll('img'));
-
+		for(let i = 0; i < file.length; i++){
+			formData.append('img', file[i]);
+		};
+		
 		try {
-			await axios.post('/v2/list', formData, {
+			await axios.post('/v2/list/img', formData, {
 				baseURL: 'http://localhost:8083',
 				headers: {
 					'Accept': 'Application/json',
 					'Content-Type': 'multipart/form-data',
 				},
 				withCredentials: true,
+				data: {title, description}
 			}).then((res) => {
 				console.log(res);
 			}).error((e) => {
@@ -66,9 +74,7 @@ function AddPost() {
 			console.log('catch', error);
 		}
 
-	}, [file]);
-
-	
+	}, [file, title, description]);
 
 return (
 	<div className='insert-container'>
@@ -92,14 +98,10 @@ return (
 			value={description}
 			onChange={(e) => setDescription(e.target.value)}
 		/>
-		{/* <form action='./AddPost' method='post' encType='multipart/form-data'> */}
-			<input type='file' name='file' onChange={(e) => handleInputImg(e)} accept='image/png, image/jpeg' />
-
-			<button type='submit' onClick={(e) => handleFormData(e)}>업로드</button>
-		{/* </form> */}
+		<input type='file' multiple name='file' onChange={(e) => handleInputImg(e)} accept='image/' />
 
 		<div className='button'>
-			<Button value='게시하기' onClick={() => insert({ title, description })} disabled={disabled} />
+			<Button type='submit' value='게시하기' onClick={(e) => submitData(e)} disabled={disabled} />
 		</div>
 
 		<style jsx>{`

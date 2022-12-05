@@ -72,6 +72,9 @@ export default function useAsync(url, method) {
 					dispatch({ type: 'ERROR', data: err.response });
 				});
 			}
+			else if (method === 'formData') {
+				console.log(req);
+			}
 		}
 		catch (err) {
 			dispatch({ type: 'ERROR', data: err.response });
